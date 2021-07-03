@@ -1,4 +1,3 @@
-#pragma once
 
 #include <fstream>
 #include <cmath>
@@ -49,6 +48,8 @@ string Parser::getTokenCell (string& token, int num)
 
     return answer;
 }
+
+//поменять double на float
 
 void Parser::get_punched_card (string PunchedCard_file_name, Memory& mem_obj)
 {
