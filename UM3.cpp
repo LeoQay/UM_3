@@ -1,8 +1,6 @@
 #pragma once
 
-#include <fstream>
 #include <iostream>
-#include <locale>
 
 #include "Processor.h"
 #include "Exception.h"

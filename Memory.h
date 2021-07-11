@@ -1,14 +1,12 @@
-struct Cell
-{
-    std::string val;
-    bool empty;
-};
-
 class Memory
 {
 private:
     int mem_size = 512;
-    Cell mem_mas[512];
+    int mem_mas[512];
+
+    int StrToInt (std::string cell);
+
+    std::string IntToStr (int value);
 public:
     Memory();
 
@@ -16,5 +14,5 @@ public:
 
     void push(int index, std::string new_val);
 
-    std::string outMemory();
+    void outMemory(std::string memory_file_name);
 };

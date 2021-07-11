@@ -61,9 +61,9 @@ void Processor::Read_PunchedCard()
     pars_obj.get_punched_card(punched_card_file_name, memory);
 }
 
-string Processor::outMemory(string memory_file_name)
+void Processor::outMemory(string memory_file_name)
 {
-    return memory.outMemory();
+    memory.outMemory(memory_file_name);
 }
 
 void Processor::inInt()

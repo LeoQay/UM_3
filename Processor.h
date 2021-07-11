@@ -107,7 +107,7 @@ public:
 
     void Read_PunchedCard();
 
-    string outMemory(string memory_file_name);
+    void outMemory(string memory_file_name);
 
     void set_max_iterations(int num);
 
