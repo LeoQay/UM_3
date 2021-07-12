@@ -51,7 +51,7 @@ std::string Translator::getTokenCell (std::string& token, int num)
     return answer;
 }
 
-void Translator::get_punched_card (string PunchedCard_file_name, Memory& mem_obj)
+void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
 {
     // функция парсит перфокарту и бросает исключения, если допущены ошибки
 

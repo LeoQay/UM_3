@@ -12,7 +12,7 @@ private:
     std::string getTokenCell (std::string& token, int num);
 
 public:
-    void get_punched_card (std::string PunchedCard_file_name, Memory& mem_obj);
+    void Translate (std::string PunchedCard_file_name, Memory& mem_obj);
 
 
 };

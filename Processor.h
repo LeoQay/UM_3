@@ -91,13 +91,13 @@ private:
 
     bool tact();
 
-    void LoadRegisters (int& REG1, int& REG2, string command, string sign);
+    void LoadIntRegisters ();
 
-    void LoadRegisters (long double& REG1, long double& REG2, string command, string sign);
+    void LoadFloatRegisters ();
 
-    void OutRangeChecker (long long res, CommandCode command);
+    void OutRangeChecker (long long res);
 
-    void OutRangeChecker (long double res, CommandCode command);
+    void OutRangeChecker (long double res);
 
 public:
     Processor();

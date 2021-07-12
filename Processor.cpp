@@ -59,7 +59,7 @@ void Processor::set_PunchedCard(string punched_card_file_name)
 
 void Processor::Read_PunchedCard()
 {
-    translator.get_punched_card(punched_card_file_name, memory);
+    translator.Translate(punched_card_file_name, memory);
 }
 
 void Processor::outMemory(string memory_file_name)
@@ -109,11 +109,11 @@ void Processor::outInt()
 
 void Processor::addInt()
 {
-    LoadRegisters(I1, I2, "ADDINT", "+");
+    LoadIntRegisters();
 
     long long res = (long long)I1 + (long long)I2;
 
-    OutRangeChecker(res, ADDINT);
+    OutRangeChecker(res);
 
     omega_res((int)res);
     Summator = Tools::itos((int)res);
@@ -122,25 +122,25 @@ void Processor::addInt()
 
 void Processor::subInt()
 {
-    LoadRegisters(I1, I2, "SUBINT", "-");
+    LoadIntRegisters();
 
     long long res = (long long)I1 - (long long)I2;
 
-    OutRangeChecker(res, SUBINT);
+    OutRangeChecker(res);
 
-    omega_res((int) res);
-    Summator = Tools::itos((int) res);
+    omega_res((int)res);
+    Summator = Tools::itos((int)res);
 
     memory.push(op1, Summator);
 }
 
 void Processor::mulInt()
 {
-    LoadRegisters(I1, I2, "MULINT", "*");
+    LoadIntRegisters();
 
     long long res = (long long)I1 * (long long)I2;
 
-    OutRangeChecker(res, MULINT);
+    OutRangeChecker(res);
 
     omega_res((int)res);
     Summator = Tools::itos((int)res);
@@ -149,13 +149,13 @@ void Processor::mulInt()
 
 void Processor::divInt()
 {
-    LoadRegisters(I1, I2, "DIVINT", "/");
+    LoadIntRegisters();
 
     if (I2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::DIVINT, op1, op2, op3);
 
     long long res = (long long)I1 / (long long)I2;
 
-    OutRangeChecker(res, DIVINT);
+    OutRangeChecker(res);
 
     omega_res((int)res);
     Summator = Tools::itos((int)res);
@@ -164,13 +164,13 @@ void Processor::divInt()
 
 void Processor::modInt()
 {
-    LoadRegisters(I1, I2, "MODINT", "%");
+    LoadIntRegisters();
 
     if (I2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::MOD, op1, op2, op3);
 
     long long res = (long long)I1 % (long long)I2;
 
-    OutRangeChecker(res, MOD);
+    OutRangeChecker(res);
 
     omega_res((int)res);
     Summator = Tools::itos((int)res);
@@ -220,10 +220,10 @@ void Processor::outFloat()
 
 void Processor::addFloat()
 {
-    LoadRegisters(F1, F2, "ADDREAL", "+");
+    LoadFloatRegisters();
     long double res = F1 + F2;
 
-    OutRangeChecker(res, ADDREAL);
+    OutRangeChecker(res);
 
     omega_res((float)res);
     Summator = Tools::ftos((float)res);
@@ -232,12 +232,13 @@ void Processor::addFloat()
 
 void Processor::subFloat()
 {
-    LoadRegisters(F1, F2, "SUBREAL", "-");
+    LoadFloatRegisters();
     long double res = F1 - F2;
 
-    OutRangeChecker(res, SUBREAL);
+    OutRangeChecker(res);
 
     omega_res((float) res);
+
     Summator = Tools::ftos((float) res);
 
     memory.push(op1, Summator);
@@ -245,10 +246,10 @@ void Processor::subFloat()
 
 void Processor::mulFloat()
 {
-    LoadRegisters(F1, F2, "MULREAL", "*");
+    LoadFloatRegisters();
     long double res = F1 * F2;
 
-    OutRangeChecker(res, MULREAL);
+    OutRangeChecker(res);
 
     omega_res((float)res);
     Summator = Tools::ftos((float)res);
@@ -257,13 +258,13 @@ void Processor::mulFloat()
 
 void Processor::divFloat()
 {
-    LoadRegisters(F1, F2, "DIVREAL", "/");
+    LoadFloatRegisters();
 
     if (F2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::DIVREAL, op1, op2, op3);
 
     long double res = F1 / F2;
 
-    OutRangeChecker(res, DIVREAL);
+    OutRangeChecker(res);
 
     omega_res((float)res);
     Summator = Tools::ftos((float)res);
@@ -514,12 +515,12 @@ string Processor::output_stat()
     return answer;
 }
 
-void Processor::LoadRegisters(int &REG1, int &REG2, string command, string sign)
+void Processor::LoadIntRegisters()
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    REG1 = Tools::stoi(R1);
-    REG2 = Tools::stoi(R2);
+    I1 = Tools::stoi(R1);
+    I2 = Tools::stoi(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -528,12 +529,12 @@ void Processor::LoadRegisters(int &REG1, int &REG2, string command, string sign)
     */
 }
 
-void Processor::LoadRegisters(long double &REG1, long double &REG2, string command, string sign)
+void Processor::LoadFloatRegisters()
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    REG1 = Tools::stold(R1);
-    REG2 = Tools::stold(R2);
+    F1 = Tools::stold(R1);
+    F2 = Tools::stold(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -542,23 +543,24 @@ void Processor::LoadRegisters(long double &REG1, long double &REG2, string comma
     */
 }
 
-void Processor::OutRangeChecker(long long res, CommandCode command)
+void Processor::OutRangeChecker(long long res)
 {
     if (res < minInt || res > maxInt)
     {
-        Err = true;
-        throw MathOutRange(saveRA, (int)command, op1, op2, op3, I1, I2);
+        // Err = true;
+        MathOutRange obj(saveRA, (int)RKcommand, op1, op2, op3, I1, I2);
+        cout << "Warning!\n" << obj.what() << "\n";
     }
 
     // logFile << " = " << res << "\n";
 }
 
-void Processor::OutRangeChecker(long double res, CommandCode command)
+void Processor::OutRangeChecker(long double res)
 {
     if (res != 0 && (abs(res) > maxFloat || abs(res) < minFloat))
     {
         Err = true;
-        throw MathOutRange(saveRA, (int)command, op1, op2, op3, (float)F1, (float)F2);
+        throw MathOutRange(saveRA, (int)RKcommand, op1, op2, op3, (float)F1, (float)F2);
     }
 
     // logFile << " = " << res << "\n";

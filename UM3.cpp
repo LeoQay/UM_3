@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 
 #include "Processor.h"
 #include "Exception.h"
@@ -12,13 +13,12 @@ int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "Russian");
 
-    cout << Tools::stoi("111111111111111111111111");
+    /*
 
     if(argc<4)
     {
         cout << "This program is an implementation of UM-3 computer\n"
                 "We need to run it following file names in argumets:\n"
-                "   memory.txt -- final state of memory\n"
                 "   punched_card.txt -- program code\n"
                 "              (override default memory state)\n"
                 "   log.txt -- file where all commands and operands\n"
@@ -31,21 +31,21 @@ int main(int argc, char **argv)
     char *punched_card_file_name=argv[2];
     char *memory_file_name=argv[1];
 
+     */
+
     string default_punch = "punched_card.txt";
     string default_memory = "memory.txt";
 
-    /*
-    ifstream fin("punched_card.txt");
+
+    ifstream fin(default_punch);
 
     if (!fin.is_open())
     {
-        cout << "File 'punched_card.txt' lost\n";
+        cout << "File " << default_punch << " lost\n";
         return 1;
     }
 
-    ofstream fout("memory.txt");
-    ofstream logFile("log.txt");
-    */
+    fin.close();
 
     Processor processor;
 
