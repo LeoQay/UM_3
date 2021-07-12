@@ -10,15 +10,18 @@
 
 using namespace std;
 
-Memory::Memory()
+Memory::Memory(InitMemory mode)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(-2147483648, 2147483647);
-
-    for (int & var : mem_mas)
+    if (mode == Random)
     {
-        var = dist(gen);
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(-2147483648, 2147483647);
+
+        for (int &var : mem_mas)
+        {
+            var = dist(gen);
+        }
     }
 }
 
@@ -35,7 +38,6 @@ void Memory::push(int index, std::string new_val)
 void Memory::outMemory(string memory_file_name)
 {
     ofstream answer(memory_file_name);
-
 
     for (int i = 0; i < 512; i++)
     {

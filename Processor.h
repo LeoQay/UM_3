@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Translator.h"
+#include "Tools.h"
 #include "parser.h"
 
 using namespace std;
@@ -10,7 +12,7 @@ class Processor
 {
 private:
     Memory memory;
-    Parser pars_obj;
+    Translator translator;
 
     string R1;           /* первый регистр АЛУ */
     string R2;           /* второй регистр АЛУ */
@@ -97,7 +99,6 @@ private:
 
     void OutRangeChecker (long double res, CommandCode command);
 
-    void SubSelfSelf();
 public:
     Processor();
 

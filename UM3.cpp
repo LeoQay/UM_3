@@ -4,12 +4,15 @@
 
 #include "Processor.h"
 #include "Exception.h"
+#include "Tools.h"
 
 using namespace std;
 
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "Russian");
+
+    cout << Tools::stoi("111111111111111111111111");
 
     if(argc<4)
     {
@@ -55,7 +58,7 @@ int main(int argc, char **argv)
     catch (Exception& err)
     {
         // logFile << "Punched card load fail\n";
-        cerr << "\nError in the line " << err.cell_number << "\n" << err.what() << "\n\n";
+        cout << "\nError in the line " << err.cell_number << "\n" << err.what() << "\n\n";
         // logFile << "\nError in the line " << err.cell_number << "\n" << err.what() << "\n\n";
 
         return 1;

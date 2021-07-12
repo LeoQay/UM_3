@@ -4,12 +4,10 @@ project(UM_3)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(UM-3 UM3.cpp
-                   Exception.cpp
-                   Exception.h
-                   Memory.cpp
-                   Memory.h
-                   parser.cpp
-                   parser.h
-                   Processor.cpp
-                   Processor.h
-              )
+                   Exception.cpp  Exception.h
+                   Memory.cpp     Memory.h
+                   parser.cpp     parser.h
+                   Processor.cpp  Processor.h
+                   Translator.cpp Translator.h
+                   Tools.cpp      Tools.h
+        )

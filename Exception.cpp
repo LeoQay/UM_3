@@ -82,6 +82,8 @@ FTOIOutRange::FTOIOutRange (int num, int err_com, int op1, int op2, int op3, lon
     this->message += oss.str();
 }
 
+/*
+
 MemoryException::MemoryException (int num, int address, std::string message) : Exception(num, move(message))
 {
     std::ostringstream oss;
@@ -94,3 +96,5 @@ MemoryUndefined::MemoryUndefined (int num, int address, std::string message) :
 {
     this->address = address;
 }
+
+ */

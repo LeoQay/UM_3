@@ -3,7 +3,8 @@
 
 #include "Processor.h"
 #include "Exception.h"
-
+#include "Tools.h"
+#include "Translator.h"
 
 void Processor::omega_res(int res)
 {
@@ -58,7 +59,7 @@ void Processor::set_PunchedCard(string punched_card_file_name)
 
 void Processor::Read_PunchedCard()
 {
-    pars_obj.get_punched_card(punched_card_file_name, memory);
+    translator.get_punched_card(punched_card_file_name, memory);
 }
 
 void Processor::outMemory(string memory_file_name)
@@ -81,7 +82,7 @@ void Processor::inInt()
             try {
                 string token = Parser::getTokenInt();
                 // logFile << token << "\n";
-                value = Parser::stoi(token, 10);
+                value = Tools::stoi(token, 10);
                 ok = true;
             }
 
@@ -90,7 +91,7 @@ void Processor::inInt()
             }
         }
 
-        memory.push(op1, Parser::itos(value));
+        memory.push(op1, Tools::itos(value));
         op1 = (op1 + 1) % 512;
     }
 }
@@ -99,7 +100,7 @@ void Processor::outInt()
 {
     while(op2-- > 0)
     {
-        int val = Parser::stoi(memory.get(op1));
+        int val = Tools::stoi(memory.get(op1));
         // logFile << "Int from " << "<"<<op1<<">" << ": " << val << "\n";
         cout << "Int from " << "<"<<op1<<">" << ": " << val << "\n";
         op1 = (op1 + 1) % 512;
@@ -115,26 +116,21 @@ void Processor::addInt()
     OutRangeChecker(res, ADDINT);
 
     omega_res((int)res);
-    Summator = Parser::itos((int)res);
+    Summator = Tools::itos((int)res);
     memory.push(op1, Summator);
 }
 
 void Processor::subInt()
 {
-    if (op2 == op3)
-    {
-        SubSelfSelf();
-    }else
-    {
-        LoadRegisters(I1, I2, "SUBINT", "-");
+    LoadRegisters(I1, I2, "SUBINT", "-");
 
-        long long res = (long long)I1 - (long long)I2;
+    long long res = (long long)I1 - (long long)I2;
 
-        OutRangeChecker(res, SUBINT);
+    OutRangeChecker(res, SUBINT);
 
-        omega_res((int) res);
-        Summator = Parser::itos((int) res);
-    }
+    omega_res((int) res);
+    Summator = Tools::itos((int) res);
+
     memory.push(op1, Summator);
 }
 
@@ -147,7 +143,7 @@ void Processor::mulInt()
     OutRangeChecker(res, MULINT);
 
     omega_res((int)res);
-    Summator = Parser::itos((int)res);
+    Summator = Tools::itos((int)res);
     memory.push(op1, Summator);
 }
 
@@ -162,7 +158,7 @@ void Processor::divInt()
     OutRangeChecker(res, DIVINT);
 
     omega_res((int)res);
-    Summator = Parser::itos((int)res);
+    Summator = Tools::itos((int)res);
     memory.push(op1, Summator);
 }
 
@@ -177,7 +173,7 @@ void Processor::modInt()
     OutRangeChecker(res, MOD);
 
     omega_res((int)res);
-    Summator = Parser::itos((int)res);
+    Summator = Tools::itos((int)res);
     memory.push(op1, Summator);
 }
 
@@ -206,7 +202,7 @@ void Processor::inFloat()
             }
         }
 
-        memory.push(op1, Parser::ftos(value));
+        memory.push(op1, Tools::ftos(value));
         op1 = (op1 + 1) % 512;
     }
 }
@@ -215,7 +211,7 @@ void Processor::outFloat()
 {
     while(op2-- > 0)
     {
-        auto val = (float)(Parser::stold(memory.get(op1)));
+        auto val = (float)(Tools::stold(memory.get(op1)));
         // logFile << "Real from " << "<"<<op1<<">" << ": " << val << "\n";
         cout << "Real from " << "<"<<op1<<">" << ": " << val << "\n";
         op1 = (op1 + 1) % 512;
@@ -230,25 +226,20 @@ void Processor::addFloat()
     OutRangeChecker(res, ADDREAL);
 
     omega_res((float)res);
-    Summator = Parser::ftos((float)res);
+    Summator = Tools::ftos((float)res);
     memory.push(op1, Summator);
 }
 
 void Processor::subFloat()
 {
-    if (op2 == op3)
-    {
-        SubSelfSelf();
-    }else
-    {
-        LoadRegisters(F1, F2, "SUBREAL", "-");
-        long double res = F1 - F2;
+    LoadRegisters(F1, F2, "SUBREAL", "-");
+    long double res = F1 - F2;
 
-        OutRangeChecker(res, SUBREAL);
+    OutRangeChecker(res, SUBREAL);
 
-        omega_res((float) res);
-        Summator = Parser::ftos((float) res);
-    }
+    omega_res((float) res);
+    Summator = Tools::ftos((float) res);
+
     memory.push(op1, Summator);
 }
 
@@ -260,7 +251,7 @@ void Processor::mulFloat()
     OutRangeChecker(res, MULREAL);
 
     omega_res((float)res);
-    Summator = Parser::ftos((float)res);
+    Summator = Tools::ftos((float)res);
     memory.push(op1, Summator);
 }
 
@@ -275,20 +266,20 @@ void Processor::divFloat()
     OutRangeChecker(res, DIVREAL);
 
     omega_res((float)res);
-    Summator = Parser::ftos((float)res);
+    Summator = Tools::ftos((float)res);
     memory.push(op1, Summator);
 }
 
 void Processor::intToFloat ()
 {
     // int is always placed in float
-    memory.push(op1, Parser::ftos((float)Parser::stoi(memory.get(op3))));
+    memory.push(op1, Tools::ftos((float)Tools::stoi(memory.get(op3))));
     // logFile << "<"<<op1<<">" << " = " << "(real)" << "<"<<op3<<">" << "\n";
 }
 
 void Processor::floatToInt ()
 {
-    long double F = Parser::stold(memory.get(op3));
+    long double F = Tools::stold(memory.get(op3));
 
     if (F < minInt || F > maxInt)
     {
@@ -296,7 +287,7 @@ void Processor::floatToInt ()
         throw FTOIOutRange(saveRA, (int)CommandCode::RTOI, op1, op2, op3, F);
     }
 
-    memory.push(op1, Parser::itos((int)F));
+    memory.push(op1, Tools::itos((int)F));
     // logFile << "<"<<op1<<">" << " = " << "(real)" << "<"<<op3<<">" << "\n";
 }
 
@@ -490,15 +481,7 @@ bool Processor::tact()
 
 void Processor::main_process()
 {
-    try
-    {
-        while (!Err && iterations++ != max_iterations && tact());
-    }
-
-    catch (MemoryUndefined& err)
-    {
-        throw MemoryUndefined(saveRA, err.address);
-    }
+    while (!Err && iterations++ != max_iterations && tact());
 }
 
 void Processor::set_max_iterations(int num)
@@ -512,12 +495,12 @@ string Processor::output_stat()
     answer += "\n-----------------------------------------------------\n";
     answer += "Register statistics:\n";
     answer +=  "RK      : ";
-    answer += Parser::itos(saveRA, 3, 10) + " " + RK;
+    answer += Tools::itos(saveRA, 3, 10) + " " + RK;
     answer += "\n";
-    answer += "Pars RK : " + pars_obj.getCommandLexem(RKcommand) + " " +
-              Parser::itos(op1, 3, 10) + " " +
-              Parser::itos(op2, 3, 10) + " " +
-              Parser::itos(op3, 3, 10);
+    answer += "Pars RK : " + Tools::getCommandLexem(RKcommand) + " " +
+              Tools::itos(op1, 3, 10) + " " +
+              Tools::itos(op2, 3, 10) + " " +
+              Tools::itos(op3, 3, 10);
     answer += "\n";
     answer += ("R1      : " + R1);
     answer += "\n";
@@ -535,8 +518,8 @@ void Processor::LoadRegisters(int &REG1, int &REG2, string command, string sign)
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    REG1 = Parser::stoi(R1);
-    REG2 = Parser::stoi(R2);
+    REG1 = Tools::stoi(R1);
+    REG2 = Tools::stoi(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -549,8 +532,8 @@ void Processor::LoadRegisters(long double &REG1, long double &REG2, string comma
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    REG1 = Parser::stold(R1);
-    REG2 = Parser::stold(R2);
+    REG1 = Tools::stold(R1);
+    REG2 = Tools::stold(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -579,12 +562,4 @@ void Processor::OutRangeChecker(long double res, CommandCode command)
     }
 
     // logFile << " = " << res << "\n";
-}
-
-void Processor::SubSelfSelf()
-{
-    Summator = "00000000000000000000000000000000";
-    R1       = "00000000000000000000000000000000";
-    R2       = "00000000000000000000000000000000";
-    omega    = 0;
 }

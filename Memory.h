@@ -1,3 +1,11 @@
+#pragma once
+
+enum InitMemory{
+    Random,
+    Zeros,
+    Custom
+};
+
 class Memory
 {
 private:
@@ -8,7 +16,7 @@ private:
 
     std::string IntToStr (int value);
 public:
-    Memory();
+    Memory(InitMemory mode = Random);
 
     std::string get(int index);
 

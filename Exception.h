@@ -90,6 +90,8 @@ public:
                   std::string message = "Float to int out range!");
 };
 
+/*
+
 class MemoryException : public Exception
 {
 public:
@@ -102,3 +104,5 @@ public:
     int address;
     MemoryUndefined (int num, int address, std::string message = "Accessing Undefined Memory!");
 };
+
+*/
