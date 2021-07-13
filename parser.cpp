@@ -1,6 +1,7 @@
 
 #include <fstream>
 #include <cmath>
+#include <iostream>
 
 #include "parser.h"
 #include "Exception.h"
@@ -12,22 +13,18 @@ using namespace std;
 
 void Parser::cellParser (string& s, CommandCode& command, int& op1, int& op2, int& op3)
 {
-    command = (CommandCode)Tools::stoi(s.substr(0, 5));
-    op1 = Tools::stoi(s.substr(5, 9));
-    op2 = Tools::stoi(s.substr(14, 9));
-    op3 = Tools::stoi(s.substr(23, 9));
+    command = (CommandCode) Tools::StrToInt(s.substr(0, 5));
+    op1 = Tools::StrToInt(s.substr(5, 9));
+    op2 = Tools::StrToInt(s.substr(14, 9));
+    op3 = Tools::StrToInt(s.substr(23, 9));
 }
 
 
 string Parser::getTokenInt()
 {
     string token;
-    char c = '-';
-    while (c != '\n')
-    {
-        c = (char)getchar();
-        if (c != '\n') token += c;
-    }
+
+    getline(cin, token);
 
     while (token[0] == ' ') token.erase(0, 1);
     while (token[token.length() - 1] == ' ') token.erase(token[token.length() - 1], 1);
@@ -47,19 +44,22 @@ string Parser::getTokenInt()
 }
 
 
-float Parser::getTokenFloat()
-{
+string Parser::getTokenFloat()
+{/*
+    float f;
+    cin >> f;
+    return f;
+*/
+
     string token;
-    char c = '-';
 
-    while (c != '\n')
-    {
-        c = (char)getchar();
-        if (c != '\n') token += c;
-    }
+    getline(cin, token);
 
-    while (token[0] == ' ') token.erase(0, 1);
-    while (token[token.length() - 1] == ' ') token.erase(token[token.length() - 1], 1);
+    while (Tools::CheckSpaceChar(token[0]))
+        token.erase(0, 1);
+
+    while (Tools::CheckSpaceChar(token[token.length() - 1]))
+        token.erase(token[token.length() - 1], 1);
 
     if (token.length() == 0)
         throw Empty(0, "Empty token!");
@@ -82,5 +82,5 @@ float Parser::getTokenFloat()
             throw Bad_token(0, token, "Bad float token!");
     }
 
-    return (float)strtod(token.c_str(), nullptr);
+    return token;
 }

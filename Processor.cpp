@@ -19,17 +19,25 @@ void Processor::omega_res(float res)
 Processor::Processor()
 {
     RA = 1;
-    saveRA = 1;
+    CurrentCell = 1;
+    BreakPoint = -1;
+
     Err = false;
+
     omega = 0;
+
     RK = "Empty";
     RKcommand = CommandCode::END;
+
     R1 = "Empty";
     R2 = "Empty";
     I1 = 0, I2 = 0;
     F1 = 0, F2 = 0;
+
     Summator = "Empty";
+
     op1 = 0, op2 = 0, op3 = 0;
+
     iterations = 0;
     max_iterations = -1;
     /* если не установить максимальное число итераций,
@@ -75,23 +83,24 @@ void Processor::inInt()
         bool ok = false;
 
         // logFile << "Input int to " << "<"<<op1<<">" << ":";
-        cout << "Input int to " << "<"<<op1<<">" << ":";
+        cout << "Input int to " << "<"<<op1<<">" << ": ";
 
         while (!ok)
         {
             try {
                 string token = Parser::getTokenInt();
                 // logFile << token << "\n";
-                value = Tools::stoi(token, 10);
+                value = Tools::StrToInt(token, 10);
+
                 ok = true;
             }
 
             catch (Exception &err) {
-                cout << err.what() << "\nRewrite please:";
+                cout << err.what() << "\nRewrite please: ";
             }
         }
 
-        memory.push(op1, Tools::itos(value));
+        memory.push(op1, Tools::IntToStr(value));
         op1 = (op1 + 1) % 512;
     }
 }
@@ -100,7 +109,7 @@ void Processor::outInt()
 {
     while(op2-- > 0)
     {
-        int val = Tools::stoi(memory.get(op1));
+        int val = Tools::StrToInt(memory.get(op1));
         // logFile << "Int from " << "<"<<op1<<">" << ": " << val << "\n";
         cout << "Int from " << "<"<<op1<<">" << ": " << val << "\n";
         op1 = (op1 + 1) % 512;
@@ -116,7 +125,7 @@ void Processor::addInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = Tools::itos((int)res);
+    Summator = Tools::IntToStr((int) res);
     memory.push(op1, Summator);
 }
 
@@ -129,7 +138,7 @@ void Processor::subInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = Tools::itos((int)res);
+    Summator = Tools::IntToStr((int) res);
 
     memory.push(op1, Summator);
 }
@@ -143,7 +152,7 @@ void Processor::mulInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = Tools::itos((int)res);
+    Summator = Tools::IntToStr((int) res);
     memory.push(op1, Summator);
 }
 
@@ -151,14 +160,14 @@ void Processor::divInt()
 {
     LoadIntRegisters();
 
-    if (I2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::DIVINT, op1, op2, op3);
+    if (I2 == 0) throw NULL_DIVIDE(CurrentCell, (int)CommandCode::DIVINT, op1, op2, op3);
 
     long long res = (long long)I1 / (long long)I2;
 
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = Tools::itos((int)res);
+    Summator = Tools::IntToStr((int) res);
     memory.push(op1, Summator);
 }
 
@@ -166,14 +175,14 @@ void Processor::modInt()
 {
     LoadIntRegisters();
 
-    if (I2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::MOD, op1, op2, op3);
+    if (I2 == 0) throw NULL_DIVIDE(CurrentCell, (int)CommandCode::MOD, op1, op2, op3);
 
     long long res = (long long)I1 % (long long)I2;
 
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = Tools::itos((int)res);
+    Summator = Tools::IntToStr((int) res);
     memory.push(op1, Summator);
 }
 
@@ -185,7 +194,7 @@ void Processor::inFloat()
     {
         bool ok = false;
 
-        cout << "Input real to " << "<"<<op1<<">" << ">:";
+        cout << "Input real to " << "<"<<op1<<">" << ":";
         // logFile << "Input real to "<< "<"<<op1<<">" << ":";
 
         while (!ok)
@@ -202,7 +211,7 @@ void Processor::inFloat()
             }
         }
 
-        memory.push(op1, Tools::ftos(value));
+        memory.push(op1, Tools::FloatToStr(value));
         op1 = (op1 + 1) % 512;
     }
 }
@@ -211,7 +220,7 @@ void Processor::outFloat()
 {
     while(op2-- > 0)
     {
-        auto val = (float)(Tools::stold(memory.get(op1)));
+        float val = Tools::StrToFloat(memory.get(op1));
         // logFile << "Real from " << "<"<<op1<<">" << ": " << val << "\n";
         cout << "Real from " << "<"<<op1<<">" << ": " << val << "\n";
         op1 = (op1 + 1) % 512;
@@ -221,25 +230,25 @@ void Processor::outFloat()
 void Processor::addFloat()
 {
     LoadFloatRegisters();
-    long double res = F1 + F2;
+    float res = F1 + F2;
 
     OutRangeChecker(res);
 
-    omega_res((float)res);
-    Summator = Tools::ftos((float)res);
+    omega_res(res);
+    Summator = Tools::FloatToStr(res);
     memory.push(op1, Summator);
 }
 
 void Processor::subFloat()
 {
     LoadFloatRegisters();
-    long double res = F1 - F2;
+    float res = F1 - F2;
 
     OutRangeChecker(res);
 
-    omega_res((float) res);
+    omega_res(res);
 
-    Summator = Tools::ftos((float) res);
+    Summator = Tools::FloatToStr(res);
 
     memory.push(op1, Summator);
 }
@@ -247,12 +256,12 @@ void Processor::subFloat()
 void Processor::mulFloat()
 {
     LoadFloatRegisters();
-    long double res = F1 * F2;
+    float res = F1 * F2;
 
     OutRangeChecker(res);
 
-    omega_res((float)res);
-    Summator = Tools::ftos((float)res);
+    omega_res(res);
+    Summator = Tools::FloatToStr(res);
     memory.push(op1, Summator);
 }
 
@@ -260,35 +269,35 @@ void Processor::divFloat()
 {
     LoadFloatRegisters();
 
-    if (F2 == 0) throw NULL_DIVIDE(saveRA, (int)CommandCode::DIVREAL, op1, op2, op3);
+    if (F2 == 0) throw NULL_DIVIDE(CurrentCell, (int)CommandCode::DIVREAL, op1, op2, op3);
 
-    long double res = F1 / F2;
+    float res = F1 / F2;
 
     OutRangeChecker(res);
 
-    omega_res((float)res);
-    Summator = Tools::ftos((float)res);
+    omega_res(res);
+    Summator = Tools::FloatToStr(res);
     memory.push(op1, Summator);
 }
 
 void Processor::intToFloat ()
 {
     // int is always placed in float
-    memory.push(op1, Tools::ftos((float)Tools::stoi(memory.get(op3))));
+    memory.push(op1, Tools::FloatToStr((float) Tools::StrToInt(memory.get(op3))));
     // logFile << "<"<<op1<<">" << " = " << "(real)" << "<"<<op3<<">" << "\n";
 }
 
 void Processor::floatToInt ()
 {
-    long double F = Tools::stold(memory.get(op3));
+    long double F = Tools::StrToFloat(memory.get(op3));
 
     if (F < minInt || F > maxInt)
     {
         Err = true;
-        throw FTOIOutRange(saveRA, (int)CommandCode::RTOI, op1, op2, op3, F);
+        throw FTOIOutRange(CurrentCell, (int)CommandCode::RTOI, op1, op2, op3, F);
     }
 
-    memory.push(op1, Tools::itos((int)F));
+    memory.push(op1, Tools::IntToStr((int) F));
     // logFile << "<"<<op1<<">" << " = " << "(real)" << "<"<<op3<<">" << "\n";
 }
 
@@ -296,7 +305,7 @@ void Processor::unconditional ()
 {
     RA = op2;
     // logFile << "JUMP: ";
-    // logFile << "Jump from " << saveRA << " to " << op2 << "\n";
+    // logFile << "Jump from " << CurrentCell << " to " << op2 << "\n";
 }
 
 void Processor::PR()
@@ -305,7 +314,7 @@ void Processor::PR()
     if (omega == 0)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -316,7 +325,7 @@ void Processor::PNR ()
     if (omega != 0)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -327,7 +336,7 @@ void Processor::PB ()
     if (omega == 2)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -338,7 +347,7 @@ void Processor::PM ()
     if (omega == 1)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -349,7 +358,7 @@ void Processor::PBR ()
     if (omega != 1)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -360,7 +369,7 @@ void Processor::PMR ()
     if (omega != 2)
     {
         RA = op2;
-        // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+        // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
     }// else
         // logFile << "\n";
 }
@@ -372,15 +381,15 @@ void Processor::just_if ()
     {
         case 0:
             RA = op1;
-            // logFile << ", Jump from " << saveRA << " to " << op1 << "\n";
+            // logFile << ", Jump from " << CurrentCell << " to " << op1 << "\n";
             break;
         case 1:
             RA = op2;
-            // logFile << ", Jump from " << saveRA << " to " << op2 << "\n";
+            // logFile << ", Jump from " << CurrentCell << " to " << op2 << "\n";
             break;
         case 2:
             RA = op3;
-            // logFile << ", Jump from " << saveRA << " to " << op3 << "\n";
+            // logFile << ", Jump from " << CurrentCell << " to " << op3 << "\n";
     }
 }
 
@@ -392,8 +401,9 @@ void Processor::mov()
 
 bool Processor::tact()
 {
-    saveRA = RA;
-    RK = memory.get(RA);
+    CurrentCell = RA;
+
+    RK = memory.get(CurrentCell);
     RA = (RA + 1) % 512;
 
     Parser::cellParser(RK, RKcommand, op1, op2, op3);
@@ -475,19 +485,27 @@ bool Processor::tact()
         case CommandCode::END:
             return false;
         default:
-            throw Bad_command(saveRA, (int)RKcommand, op1, op2, op3);
+            throw Bad_command(CurrentCell, (int)RKcommand, op1, op2, op3);
     }
     return true;
 }
 
 void Processor::main_process()
 {
-    while (!Err && iterations++ != max_iterations && tact());
+
+    do {
+        BreakPointChecker();
+    }while (!Err && iterations++ != max_iterations && tact());
 }
 
 void Processor::set_max_iterations(int num)
 {
     max_iterations = num;
+}
+
+void Processor::set_BreakPoint(int NewBreakPoint)
+{
+    BreakPoint = NewBreakPoint;
 }
 
 string Processor::output_stat()
@@ -496,12 +514,12 @@ string Processor::output_stat()
     answer += "\n-----------------------------------------------------\n";
     answer += "Register statistics:\n";
     answer +=  "RK      : ";
-    answer += Tools::itos(saveRA, 3, 10) + " " + RK;
+    answer += Tools::IntToStr(CurrentCell, 3, 10) + " " + RK;
     answer += "\n";
     answer += "Pars RK : " + Tools::getCommandLexem(RKcommand) + " " +
-              Tools::itos(op1, 3, 10) + " " +
-              Tools::itos(op2, 3, 10) + " " +
-              Tools::itos(op3, 3, 10);
+            Tools::IntToStr(op1, 3, 10) + " " +
+              Tools::IntToStr(op2, 3, 10) + " " +
+              Tools::IntToStr(op3, 3, 10);
     answer += "\n";
     answer += ("R1      : " + R1);
     answer += "\n";
@@ -519,8 +537,8 @@ void Processor::LoadIntRegisters()
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    I1 = Tools::stoi(R1);
-    I2 = Tools::stoi(R2);
+    I1 = Tools::StrToInt(R1);
+    I2 = Tools::StrToInt(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -533,8 +551,8 @@ void Processor::LoadFloatRegisters()
 {
     R1 = memory.get(op2);
     R2 = memory.get(op3);
-    F1 = Tools::stold(R1);
-    F2 = Tools::stold(R2);
+    F1 = Tools::StrToFloat(R1);
+    F2 = Tools::StrToFloat(R2);
 
     /* logFile << command << ": " << "<"<<op1<<">" << " = "
             << "<"<<op2<<">" << "("<<REG1<<")"
@@ -548,20 +566,26 @@ void Processor::OutRangeChecker(long long res)
     if (res < minInt || res > maxInt)
     {
         // Err = true;
-        MathOutRange obj(saveRA, (int)RKcommand, op1, op2, op3, I1, I2);
+        MathOutRange obj(CurrentCell, (int)RKcommand, op1, op2, op3, I1, I2);
         cout << "Warning!\n" << obj.what() << "\n";
     }
 
     // logFile << " = " << res << "\n";
 }
 
-void Processor::OutRangeChecker(long double res)
+void Processor::OutRangeChecker(float res)
 {
     if (res != 0 && (abs(res) > maxFloat || abs(res) < minFloat))
     {
-        Err = true;
-        throw MathOutRange(saveRA, (int)RKcommand, op1, op2, op3, (float)F1, (float)F2);
+        // Err = true;
+        MathOutRange obj(CurrentCell, (int)RKcommand, op1, op2, op3, (float)F1, (float)F2);
+        cout << "Warning!\n" << obj.what() << "\n";
     }
 
     // logFile << " = " << res << "\n";
+}
+
+void Processor::BreakPointChecker()
+{
+
 }

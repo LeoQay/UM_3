@@ -11,7 +11,7 @@ int Translator::command_check (std::string command, int num)
 {
     if (Tools::number(command))
     {
-        int answer = Tools::stoi(command, 10);
+        int answer = Tools::StrToInt(command, 10);
         if (answer >= 0 && answer <= 31)
             return answer;
         else
@@ -92,7 +92,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         }
 
         // все-таки числовая, проверим на выход за диапазон
-        position = Tools::stoi(token, 10);
+        position = Tools::StrToInt(token, 10);
 
         if (position > 511 || position < 0)
         {
@@ -112,7 +112,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         }
 
         // командам в памяти ум3 отводится 5 битов
-        result += Tools::itos(command_check(token, cellNumber), 5);
+        result += Tools::IntToStr(command_check(token, cellNumber), 5);
 
         // op1, op2, op3
         for (int i = 0; i < 3; i++)
@@ -136,7 +136,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
                 throw Bad_token(cellNumber, token, "Bad token of " + opi + "!");
             }
 
-            int token_val = Tools::stoi(token, 10);
+            int token_val = Tools::StrToInt(token, 10);
 
             if (token_val > 511 || token_val < 0)
             {
@@ -145,7 +145,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             }
 
             // каждому операнду отводится по 9 бит
-            result += Tools::itos(token_val, 9);
+            result += Tools::IntToStr(token_val, 9);
         }
 
         mem_obj.push(position, result);

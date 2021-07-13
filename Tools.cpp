@@ -35,6 +35,11 @@ Tools::Tools()
             {"IF",       IF      },
             {"END",      END     }
     };
+
+    setSpaceChar = {
+            ' ',
+            '\t'
+    };
 }
 
 
@@ -47,7 +52,7 @@ bool Tools::number(std::string s)  // проверка на числовую л�
 }
 
 
-int Tools::stoi (std::string stroka, int origin_system)
+int Tools::StrToInt (std::string stroka, int origin_system)
 {
     int num = 0, ten_sys, it = 0;
     int sign = 1;
@@ -69,7 +74,7 @@ int Tools::stoi (std::string stroka, int origin_system)
 }
 
 
-std::string Tools::itos (int value, int length, int new_system)
+std::string Tools::IntToStr (int value, int length, int new_system)
 {
     auto val = (unsigned int)value;
     string answer;
@@ -84,22 +89,41 @@ std::string Tools::itos (int value, int length, int new_system)
 }
 
 
-long double Tools::stold (string s)
+float Tools::StrToFloat (string s)
 {
+
+    int value = Tools::StrToInt(s);
+
+    return *((float*)(&value));
+
+    /*
+
     // в памяти +0 = 000...00,  -0 = 100...00
+
     if (s.substr(1, 31) == "0000000000000000000000000000000")  // 31 zero
         return 0;
 
     int sign = 1 - 2 * (s[0] - '0');     // при (int)s[0] = 48 sign = 1, а при 49 sign = -1
     int E = stoi(s.substr(1, 8), 2);
-    int sub_Mantis = stoi('1' + s.substr(9, 23), 2);
+    int sub_Mantis = StrToInt('1' + s.substr(9, 23), 2);
 
     return sign * ((long double)sub_Mantis * pow(2, E - 127 - 23));
+
+    */
 }
 
 
-string Tools::ftos(float number) /* вещественное число 1.Mantis * (2 ^ (E - 127)) */
+string Tools::FloatToStr(float number) /* вещественное число 1.Mantis * (2 ^ (E - 127)) */
 {
+
+    int* val = (int*)&number;
+
+    int p = *val;
+
+    return Tools::IntToStr(*((int*)(&number)));
+
+    /*
+
     if (number == 0) return "00000000000000000000000000000000"; // 32 zero
 
     char sign = number > 0 ? '0' : '1';
@@ -123,9 +147,11 @@ string Tools::ftos(float number) /* вещественное число 1.Mantis
     positive -= 1;  // приведение к виду 0.Mantis
     int Mantis = (int)(positive * pow(2, 23)); // приведение к виду Mantis
 
-    string answer = sign + itos(E, 8) + itos(Mantis, 23);
+    string answer = sign + itos(E, 8) + IntToStr(Mantis, 23);
 
     return answer;
+
+    */
 }
 
 
@@ -161,4 +187,14 @@ string Tools::getCommandLexem(CommandCode command)
         if (var.second == command)
             return var.first;
     return "";
+}
+
+bool Tools::CheckSpaceChar(char word)
+{
+    Tools tools;
+
+    if (tools.setSpaceChar.find(word) == tools.setSpaceChar.end())
+        return false;
+    else
+        return true;
 }

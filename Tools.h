@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 
 using namespace std;
 
@@ -40,16 +41,20 @@ class Tools
 public:
     map <string, CommandCode> mapCommands;
 
+    set <char> setSpaceChar;
+
     Tools();
 
-    static int stoi (string stroka, int origin_system = 2);                // string to integer
-    static string itos (int value, int length = 32, int new_system = 2);   // integer to string
-    static long double stold (string s);                                   // string to long double
-    static string ftos (float number);                                     // float to string
+    static int StrToInt (string stroka, int origin_system = 2);                // string to integer
+    static string IntToStr (int value, int length = 32, int new_system = 2);   // integer to string
+    static float StrToFloat (string s);                                   // string to long double
+    static string FloatToStr (float number);                                     // float to string
 
     static bool number (string s); // true, если в строке целое число
 
     static bool stringCmpGE (string s1, string s2);   // compare, stringCmpGE("-2", "3") = false
 
     static string getCommandLexem(CommandCode command);
+
+    static bool CheckSpaceChar (char word);
 };

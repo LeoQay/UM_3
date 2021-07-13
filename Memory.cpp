@@ -5,8 +5,7 @@
 #include <random>
 
 #include "Memory.h"
-
-#include "Exception.h"
+#include "Tools.h"
 
 using namespace std;
 

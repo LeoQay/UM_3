@@ -5,7 +5,6 @@
 
 #include "Processor.h"
 #include "Exception.h"
-#include "Tools.h"
 
 using namespace std;
 
