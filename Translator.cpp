@@ -148,7 +148,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             result += Tools::IntToStr(token_val, 9);
         }
 
-        mem_obj.push(position, result);
+        mem_obj.pushStr(position, result);
     }
 
     fin.close();

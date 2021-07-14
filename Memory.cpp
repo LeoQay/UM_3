@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-
 #include <random>
 
 #include "Memory.h"
@@ -24,57 +23,48 @@ Memory::Memory(InitMemory mode)
     }
 }
 
-std::string Memory::get(int index)
+std::string Memory::getStr(int index)
 {
-    return IntToStr(mem_mas[index]);
+    return Tools::IntToStr(mem_mas[index]);
 }
 
-void Memory::push(int index, std::string new_val)
+int Memory::getInt(int index)
 {
-    mem_mas[index] = StrToInt(move(new_val));
+    return mem_mas[index];
 }
 
-void Memory::outMemory(string memory_file_name)
+float Memory::getFloat(int index)
+{
+    return *(float*)&mem_mas[index];
+}
+
+
+void Memory::pushStr(int index, std::string new_val)
+{
+    mem_mas[index] = Tools::StrToInt(move(new_val));
+}
+
+void Memory::pushInt(int index, int value)
+{
+    mem_mas[index] = value;
+}
+
+void Memory::pushFloat(int index, float value)
+{
+    mem_mas[index] = *(int*)&value;
+}
+
+void Memory::outNiceMemory(string memory_file_name)
 {
     ofstream answer(memory_file_name);
 
     for (int i = 0; i < 512; i++)
     {
         if (i < 10)
-            answer << "  ";
+            answer << "00";
         else if (i < 100)
-            answer << " ";
+            answer << "0";
 
-        answer << i << " " << get(i) << "\n";
+        answer << i << " " << getStr(i) << "\n";
     }
-}
-
-int Memory::StrToInt(std::string cell)
-{
-    int value = 0;
-
-    for (int i = 0; i < 32; i++)
-        if (cell[i] == '1')
-            value = 2 * value + 1;
-        else
-            value = 2 * value;
-
-    return value;
-}
-
-std::string Memory::IntToStr(int value)
-{
-    std::string cell = "";
-
-    for (int i = 0; i < 32; i++)
-    {
-        if (value & 1)
-            cell = "1" + cell;
-        else
-            cell = "0" + cell;
-
-        value = value >> 1;
-    }
-
-    return cell;
 }

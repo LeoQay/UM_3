@@ -3,8 +3,7 @@
 #include <string>
 
 #include "Translator.h"
-#include "Tools.h"
-#include "parser.h"
+#include "Parser.h"
 
 using namespace std;
 
@@ -14,15 +13,18 @@ private:
     Memory memory;
     Translator translator;
 
-    string R1;           /* первый регистр АЛУ */
-    string R2;           /* второй регистр АЛУ */
-    int I1, I2;          // регистры АЛУ для целых
-    float F1, F2;  // регистры АЛУ для вещественных
 
-    string Summator;     /* регистр сумматора (хранит результат) */
+    int Register1;
+    int Register2;
+    int Summator;
+
+    float FRegister1;
+    float FRegister2;
+    float FSummator;
+
 
     int RA;              /* счетчик адреса, содержит адрес следующей команды  */
-    int CurrentCell;
+    int CurrentCellAddress;
     int BreakPoint;
 
     bool Err;            /* регистр ошибок, true - произошла ошибка  */
@@ -41,6 +43,7 @@ private:
     long long minInt;
     long double maxFloat;
     long double minFloat;
+
 
     string punched_card_file_name;
     string log_file_name;
@@ -79,10 +82,7 @@ private:
     void LoadIntRegisters ();
     void LoadFloatRegisters ();
 
-
     void OutRangeChecker (long long res);
-    void OutRangeChecker (float res);
-
 
     void BreakPointChecker ();
 
@@ -104,6 +104,4 @@ public:
     void set_BreakPoint (int NewBreakPoint);
 
     void main_process();
-
-    string output_stat();
 };

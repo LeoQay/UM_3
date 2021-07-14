@@ -8,7 +8,7 @@
 
 using namespace std;
 
-int main(int argc, char **argv)
+int main(int argc, char* argv[])
 {
     setlocale(LC_ALL, "Russian");
 
@@ -56,9 +56,7 @@ int main(int argc, char **argv)
 
     catch (Exception& err)
     {
-        // logFile << "Punched card load fail\n";
-        cout << "\nError in the line " << err.cell_number << "\n" << err.what() << "\n\n";
-        // logFile << "\nError in the line " << err.cell_number << "\n" << err.what() << "\n\n";
+        cout << "Error in the line " << err.cell_number << "\n" << err.what() << "\n";
 
         return 1;
     }
@@ -69,8 +67,7 @@ int main(int argc, char **argv)
 
     catch (Exception& err)
     {
-        cout << "\nError in the cell " << err.cell_number << "\n" << err.what() << "\n\n";
-        // logFile << "\nError in the cell " << err.cell_number << "\n" << err.what() << "\n\n";
+        cout << "Error in the cell " << err.cell_number << "\n" << err.what() << "\n";
 
         return 1;
     }

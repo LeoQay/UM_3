@@ -36,7 +36,7 @@ Tools::Tools()
             {"END",      END     }
     };
 
-    setSpaceChar = {
+    SpaceCharSet = {
             ' ',
             '\t'
     };
@@ -91,67 +91,15 @@ std::string Tools::IntToStr (int value, int length, int new_system)
 
 float Tools::StrToFloat (string s)
 {
-
     int value = Tools::StrToInt(s);
 
     return *((float*)(&value));
-
-    /*
-
-    // в памяти +0 = 000...00,  -0 = 100...00
-
-    if (s.substr(1, 31) == "0000000000000000000000000000000")  // 31 zero
-        return 0;
-
-    int sign = 1 - 2 * (s[0] - '0');     // при (int)s[0] = 48 sign = 1, а при 49 sign = -1
-    int E = stoi(s.substr(1, 8), 2);
-    int sub_Mantis = StrToInt('1' + s.substr(9, 23), 2);
-
-    return sign * ((long double)sub_Mantis * pow(2, E - 127 - 23));
-
-    */
 }
 
 
 string Tools::FloatToStr(float number) /* вещественное число 1.Mantis * (2 ^ (E - 127)) */
 {
-
-    int* val = (int*)&number;
-
-    int p = *val;
-
     return Tools::IntToStr(*((int*)(&number)));
-
-    /*
-
-    if (number == 0) return "00000000000000000000000000000000"; // 32 zero
-
-    char sign = number > 0 ? '0' : '1';
-    float positive = abs(number);
-    int degree = 0;
-
-    // приведение к виду 1.Mantis * 2^degree
-    while (positive / 2 >= 1)
-    {
-        positive /= 2;
-        degree++;
-    }
-    while (positive < 1)
-    {
-        positive *= 2;
-        degree--;
-    }
-
-    int E = 127 + degree;
-
-    positive -= 1;  // приведение к виду 0.Mantis
-    int Mantis = (int)(positive * pow(2, 23)); // приведение к виду Mantis
-
-    string answer = sign + itos(E, 8) + IntToStr(Mantis, 23);
-
-    return answer;
-
-    */
 }
 
 
@@ -193,8 +141,5 @@ bool Tools::CheckSpaceChar(char word)
 {
     Tools tools;
 
-    if (tools.setSpaceChar.find(word) == tools.setSpaceChar.end())
-        return false;
-    else
-        return true;
+    return !(tools.SpaceCharSet.find(word) == tools.SpaceCharSet.end());
 }

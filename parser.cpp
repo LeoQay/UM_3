@@ -1,9 +1,7 @@
-
-#include <fstream>
 #include <cmath>
 #include <iostream>
 
-#include "parser.h"
+#include "Parser.h"
 #include "Exception.h"
 #include "Tools.h"
 
@@ -45,14 +43,8 @@ string Parser::getTokenInt()
 
 
 string Parser::getTokenFloat()
-{/*
-    float f;
-    cin >> f;
-    return f;
-*/
-
+{
     string token;
-
     getline(cin, token);
 
     while (Tools::CheckSpaceChar(token[0]))

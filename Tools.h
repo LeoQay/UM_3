@@ -41,7 +41,7 @@ class Tools
 public:
     map <string, CommandCode> mapCommands;
 
-    set <char> setSpaceChar;
+    set <char> SpaceCharSet;
 
     Tools();
 
