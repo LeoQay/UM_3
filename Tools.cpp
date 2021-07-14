@@ -141,5 +141,5 @@ bool Tools::CheckSpaceChar(char word)
 {
     Tools tools;
 
-    return !(tools.SpaceCharSet.find(word) == tools.SpaceCharSet.end());
+    return tools.SpaceCharSet.find(word) != tools.SpaceCharSet.end();
 }

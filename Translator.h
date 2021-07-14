@@ -8,12 +8,11 @@
 class Translator
 {
 private:
-    int command_check (std::string command, int num);
-    std::string getTokenCell (std::string& token, int num);
+    static int command_check (std::string command, int num);
+    static std::string getTokenCell (std::string& token, int num);
 
 public:
-    void Translate (std::string PunchedCard_file_name, Memory& mem_obj);
-
+    static void Translate (std::string PunchedCard_file_name, Memory& mem_obj);
 
 };
 

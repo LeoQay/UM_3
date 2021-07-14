@@ -77,7 +77,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
 
         //  парсинг номера ячейки
         try{
-            token = getTokenCell(cell, cellNumber);
+            token = Translator::getTokenCell(cell, cellNumber);
         }
         catch (Empty&)
         {

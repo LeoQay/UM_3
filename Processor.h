@@ -10,9 +10,20 @@ using namespace std;
 class Processor
 {
 private:
+/*
+ *  memory - this is an object for storing memory
+ */
     Memory memory;
-    Translator translator;
 
+/*
+ *  It's ALU (arithmetic logic unit) registers
+ *  They're used for calculating
+ *  The registers are duplicated for various operations with integers and real values
+ *  All calculations are performed as follows:
+ *  Loading values from memory to R1 and R2
+ *  Summator = R1 (operation) R2
+ *  Loading result from Summator to memory
+ */
 
     int Register1;
     int Register2;
@@ -22,27 +33,53 @@ private:
     float FRegister2;
     float FSummator;
 
+/*
+ *  RA - Register Address
+ *  It's contains address of next command
+ */
+    int RA;
 
-    int RA;              /* счетчик адреса, содержит адрес следующей команды  */
-    int CurrentCellAddress;
+/*
+ *  It's contains address of next command which must be interrupted
+ */
     int BreakPoint;
 
-    bool Err;            /* регистр ошибок, true - произошла ошибка  */
+/*
+ *  address of current command
+ */
+    int CurrentCommandAddress;
 
-    string RK;           /* текущая команда  */
+/*
+ *  This fields are contain current command as string
+ *  and in a parsed form
+ *  command op1 op2 op3
+ */
+    string RK;
     CommandCode RKcommand;
+    int op1, op2, op3;
 
-    int op1, op2, op3;   // current operands
+/*
+ *  This register signals an error
+ */
+    bool Err;
 
-    int omega;           /* 0 - результат равен 0, 1 - меньше 0, 2 - больше 0  */
+/*
+ *  The register takes a value depending on the result of the last calculation
+ *  if result == 0 --> omega = 0
+ *  if result < 0  --> omega = 1
+ *  if result > 0  --> omega = 2
+ *  This is used for conditional operators
+ */
+    int omega;
 
+/*
+ *
+ */
     int iterations;
     int max_iterations;  /* не канонично, по умолчанию игнорируется */
 
     long long maxInt;
     long long minInt;
-    long double maxFloat;
-    long double minFloat;
 
 
     string punched_card_file_name;

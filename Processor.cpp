@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <random>
 
 #include "Processor.h"
 #include "Exception.h"
@@ -19,17 +20,28 @@ void Processor::omega_res(float res)
 
 Processor::Processor()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(-2147483648, 2147483647);
+
+    Register1 = dist(gen);
+    Register2 = dist(gen);
+    Summator = dist(gen);
+
+    int buf1 = dist(gen), buf2 = dist(gen), buf3 = dist(gen);
+    FRegister1 = *(float*)&buf1;
+    FRegister2 = *(float*)&buf2;
+    FSummator = *(float*)&buf3;
+
     RA = 1;
-    CurrentCellAddress = 1;
+    CurrentCommandAddress = 1;
     BreakPoint = -1;
 
     Err = false;
 
     omega = 0;
 
-    RK = "Empty";
     RKcommand = CommandCode::END;
-
     op1 = 0, op2 = 0, op3 = 0;
 
     iterations = 0;
@@ -39,8 +51,6 @@ Processor::Processor()
 
     maxInt = 2147483647ll;
     minInt = -2147483648ll;
-    maxFloat = 3.402823466 * pow(10, 38);
-    minFloat = 1.175494351 * pow(10, -38);
 
     log_file_name = "";
     punched_card_file_name = "";
@@ -58,7 +68,7 @@ void Processor::set_PunchedCard(string punched_card_file_name)
 
 void Processor::Read_PunchedCard()
 {
-    translator.Translate(punched_card_file_name, memory);
+    Translator::Translate(punched_card_file_name, memory);
 }
 
 void Processor::outMemory(string memory_file_name)
@@ -157,7 +167,7 @@ void Processor::divInt()
 {
     LoadIntRegisters();
 
-    if (Register2 == 0) throw NULL_DIVIDE(CurrentCellAddress, (int)CommandCode::DIVINT, op1, op2, op3);
+    if (Register2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::DIVINT, op1, op2, op3);
 
     long long res = (long long)Register1 / (long long)Register2;
 
@@ -172,7 +182,7 @@ void Processor::modInt()
 {
     LoadIntRegisters();
 
-    if (Register2 == 0) throw NULL_DIVIDE(CurrentCellAddress, (int)CommandCode::MOD, op1, op2, op3);
+    if (Register2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::MOD, op1, op2, op3);
 
     long long res = (long long)Register1 % (long long)Register2;
 
@@ -265,7 +275,7 @@ void Processor::divFloat()
 {
     LoadFloatRegisters();
 
-    if (FRegister2 == 0) throw NULL_DIVIDE(CurrentCellAddress, (int)CommandCode::DIVREAL, op1, op2, op3);
+    if (FRegister2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::DIVREAL, op1, op2, op3);
 
     float res = FRegister1 / FRegister2;
 
@@ -289,7 +299,7 @@ void Processor::floatToInt ()
     if (F < minInt || F > maxInt)
     {
         Err = true;
-        throw FTOIOutRange(CurrentCellAddress, (int)CommandCode::RTOI, op1, op2, op3, F);
+        throw FTOIOutRange(CurrentCommandAddress, (int)CommandCode::RTOI, op1, op2, op3, F);
     }
 
     memory.pushInt(op1, (int)F);
@@ -370,9 +380,9 @@ void Processor::mov()
 
 bool Processor::tact()
 {
-    CurrentCellAddress = RA;
+    CurrentCommandAddress = RA;
 
-    RK = memory.getStr(CurrentCellAddress);
+    RK = memory.getStr(CurrentCommandAddress);
     RA = (RA + 1) % 512;
 
     Parser::cellParser(RK, RKcommand, op1, op2, op3);
@@ -454,7 +464,7 @@ bool Processor::tact()
         case CommandCode::END:
             return false;
         default:
-            throw Bad_command(CurrentCellAddress, (int)RKcommand, op1, op2, op3);
+            throw Bad_command(CurrentCommandAddress, (int)RKcommand, op1, op2, op3);
     }
     return true;
 }
@@ -492,7 +502,7 @@ void Processor::OutRangeChecker(long long res)
 {
     if (res < minInt || res > maxInt)
     {
-        MathOutRange obj(CurrentCellAddress, (int)RKcommand, op1, op2, op3, Register1, Register2);
+        MathOutRange obj(CurrentCommandAddress, (int)RKcommand, op1, op2, op3, Register1, Register2);
         cout << "Warning!\n" << obj.what() << "\n";
     }
 }
