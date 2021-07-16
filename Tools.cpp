@@ -51,6 +51,15 @@ bool Tools::number(std::string s)  // проверка на числовую л�
     return i == s.length();
 }
 
+float Tools::IntToFloat(int value)
+{
+    return *(float*)&value;
+}
+
+int Tools::FloatToInt(float value)
+{
+    return *(int*)&value;
+}
 
 int Tools::StrToInt (std::string stroka, int origin_system)
 {
@@ -91,15 +100,13 @@ std::string Tools::IntToStr (int value, int length, int new_system)
 
 float Tools::StrToFloat (string s)
 {
-    int value = Tools::StrToInt(s);
-
-    return *((float*)(&value));
+    return IntToFloat(Tools::StrToInt(s));
 }
 
 
 string Tools::FloatToStr(float number) /* вещественное число 1.Mantis * (2 ^ (E - 127)) */
 {
-    return Tools::IntToStr(*((int*)(&number)));
+    return Tools::IntToStr(FloatToInt(number));
 }
 
 
@@ -143,3 +150,6 @@ bool Tools::CheckSpaceChar(char word)
 
     return tools.SpaceCharSet.find(word) != tools.SpaceCharSet.end();
 }
+
+
+

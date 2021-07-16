@@ -16,7 +16,7 @@ Memory::Memory(InitMemory mode)
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(-2147483648, 2147483647);
 
-        for (int &var : mem_mas)
+        for (int &var : memory_mas)
         {
             var = dist(gen);
         }
@@ -25,33 +25,33 @@ Memory::Memory(InitMemory mode)
 
 std::string Memory::getStr(int index)
 {
-    return Tools::IntToStr(mem_mas[index]);
+    return Tools::IntToStr(memory_mas[index]);
 }
 
 int Memory::getInt(int index)
 {
-    return mem_mas[index];
+    return memory_mas[index];
 }
 
 float Memory::getFloat(int index)
 {
-    return *(float*)&mem_mas[index];
+    return Tools::IntToFloat(memory_mas[index]);
 }
 
 
 void Memory::pushStr(int index, std::string new_val)
 {
-    mem_mas[index] = Tools::StrToInt(move(new_val));
+    memory_mas[index] = Tools::StrToInt(move(new_val));
 }
 
 void Memory::pushInt(int index, int value)
 {
-    mem_mas[index] = value;
+    memory_mas[index] = value;
 }
 
 void Memory::pushFloat(int index, float value)
 {
-    mem_mas[index] = *(int*)&value;
+    memory_mas[index] = Tools::FloatToInt(value);
 }
 
 void Memory::outNiceMemory(string memory_file_name)

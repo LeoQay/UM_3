@@ -1,12 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
 
 #include "Processor.h"
 #include "Exception.h"
 
 using namespace std;
+
 
 int main(int argc, char* argv[])
 {
@@ -32,26 +32,11 @@ int main(int argc, char* argv[])
 
      */
 
-    string default_punch = "punched_card.txt";
-    string default_memory = "memory.txt";
-
-
-    ifstream fin(default_punch);
-
-    if (!fin.is_open())
-    {
-        cout << "File " << default_punch << " lost\n";
-        return 1;
-    }
-
-    fin.close();
-
     Processor processor;
 
     try
     {
-        processor.set_PunchedCard(default_punch);
-        processor.Read_PunchedCard();
+        processor.Load_PunchedCard();
     }
 
     catch (Exception& err)
@@ -72,7 +57,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    processor.outMemory(default_memory);
+    processor.outMemory();
 
     return 0;
 }

@@ -45,10 +45,12 @@ public:
 
     Tools();
 
-    static int StrToInt (string stroka, int origin_system = 2);                // string to integer
-    static string IntToStr (int value, int length = 32, int new_system = 2);   // integer to string
-    static float StrToFloat (string s);                                   // string to long double
-    static string FloatToStr (float number);                                     // float to string
+    static float IntToFloat (int value);
+    static int FloatToInt (float value);
+    static int StrToInt (string stroka, int origin_system = 2);
+    static string IntToStr (int value, int length = 32, int new_system = 2);
+    static float StrToFloat (string s);
+    static string FloatToStr (float number);
 
     static bool number (string s); // true, если в строке целое число
 

@@ -4,9 +4,10 @@
 #include <random>
 
 #include "Processor.h"
-#include "Exception.h"
 #include "Tools.h"
 #include "Translator.h"
+#include "Parser.h"
+#include "Exception.h"
 
 void Processor::omega_res(int res)
 {
@@ -29,9 +30,9 @@ Processor::Processor()
     Summator = dist(gen);
 
     int buf1 = dist(gen), buf2 = dist(gen), buf3 = dist(gen);
-    FRegister1 = *(float*)&buf1;
-    FRegister2 = *(float*)&buf2;
-    FSummator = *(float*)&buf3;
+    FRegister1 = Tools::IntToFloat(buf1);
+    FRegister2 = Tools::IntToFloat(buf2);
+    FSummator = Tools::IntToFloat(buf3);
 
     RA = 1;
     CurrentCommandAddress = 1;
@@ -44,16 +45,20 @@ Processor::Processor()
     RKcommand = CommandCode::END;
     op1 = 0, op2 = 0, op3 = 0;
 
+/*
+ * если не установить максимальное число итераций,
+ * то iterations никогда не равен max_iterations
+ */
     iterations = 0;
     max_iterations = -1;
-    /* если не установить максимальное число итераций,
-     * то iterations никогда не равен max_iterations */
+
 
     maxInt = 2147483647ll;
     minInt = -2147483648ll;
 
-    log_file_name = "";
-    punched_card_file_name = "";
+    punched_card_file_name = "punched_card.txt";
+    memory_file_name       = "memory.txt";
+    log_file_name          = "";
 }
 
 Processor::~Processor()
@@ -61,17 +66,37 @@ Processor::~Processor()
 
 }
 
-void Processor::set_PunchedCard(string punched_card_file_name)
+void Processor::set_PunchedCardFileName(string file_name)
 {
-    this->punched_card_file_name = punched_card_file_name;
+    punched_card_file_name = file_name;
 }
 
-void Processor::Read_PunchedCard()
+void Processor::set_MemoryFileName(string file_name)
+{
+    memory_file_name = file_name;
+}
+
+void Processor::set_LogFileName(string file_name)
+{
+    log_file_name = file_name;
+}
+
+void Processor::set_max_iterations(int num)
+{
+    max_iterations = num;
+}
+
+void Processor::set_BreakPoint(int NewBreakPoint)
+{
+    BreakPoint = NewBreakPoint;
+}
+
+void Processor::Load_PunchedCard()
 {
     Translator::Translate(punched_card_file_name, memory);
 }
 
-void Processor::outMemory(string memory_file_name)
+void Processor::outMemory()
 {
     memory.outNiceMemory(memory_file_name);
 }
@@ -106,8 +131,6 @@ void Processor::inInt()
         memory.pushInt(address, value);
         address = (address + 1) % 512;
     }
-
-    cout << memory.getInt(101) << "\n";
 }
 
 void Processor::outInt()
@@ -233,6 +256,7 @@ void Processor::outFloat()
     while(counter-- > 0)
     {
         cout << "Real from " << "<"<<address<<">" << ": " << memory.getFloat(address) << "\n";
+
         address = (address + 1) % 512;
     }
 }
@@ -288,8 +312,7 @@ void Processor::divFloat()
 void Processor::intToFloat ()
 {
     float value = (float)memory.getInt(op3);
-    int val = *((int*)&value);
-    memory.pushInt(op1, val);
+    memory.pushFloat(op1, value);
 }
 
 void Processor::floatToInt ()
@@ -358,7 +381,7 @@ void Processor::PMR ()
     }
 }
 
-void Processor::just_if ()
+void Processor::conditional ()
 {
     switch (omega)
     {
@@ -381,10 +404,9 @@ void Processor::mov()
 bool Processor::tact()
 {
     CurrentCommandAddress = RA;
-
-    RK = memory.getStr(CurrentCommandAddress);
     RA = (RA + 1) % 512;
 
+    RK = memory.getStr(CurrentCommandAddress);
     Parser::cellParser(RK, RKcommand, op1, op2, op3);
 
     switch (RKcommand)
@@ -456,7 +478,7 @@ bool Processor::tact()
             PMR();
             break;
         case CommandCode::IF:
-            just_if();
+            conditional();
             break;
         case CommandCode::MOV:
             mov();
@@ -476,20 +498,11 @@ void Processor::main_process()
     }while (!Err && iterations++ != max_iterations && tact());
 }
 
-void Processor::set_max_iterations(int num)
-{
-    max_iterations = num;
-}
-
-void Processor::set_BreakPoint(int NewBreakPoint)
-{
-    BreakPoint = NewBreakPoint;
-}
-
 void Processor::LoadIntRegisters()
 {
     Register1 = memory.getInt(op2);
     Register2 = memory.getInt(op3);
+
 }
 
 void Processor::LoadFloatRegisters()
