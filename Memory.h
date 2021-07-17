@@ -39,13 +39,21 @@ public:
  *  to show memory inside
  */
 
-    int getInt (int index);
-    float getFloat (int index);
-    std::string getStr(int index);
+    int         getInt   (int index);
+    float       getFloat (int index);
+    std::string getStr   (int index);
 
-    void pushStr(int index, std::string new_val);
-    void pushInt(int index, int value);
-    void pushFloat(int index, float value);
+    void pushStr(int         index,
+                 std::string new_val
+                 );
+
+    void pushInt(int index,
+                 int value
+                 );
+
+    void pushFloat(int   index,
+                   float value
+                   );
 
 /*
  *

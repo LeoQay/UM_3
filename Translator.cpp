@@ -23,13 +23,13 @@ int Translator::command_check (std::string command, int num)
 
     Tools tools;
 
-    if ((tools.mapCommands).find(command) == (tools.mapCommands).end())
+    if ((tools.mapCommandTokens).find(command) == (tools.mapCommandTokens).end())
         throw Bad_token(num, command, "Bad token of command!");
 
-    return (tools.mapCommands)[command];
+    return (tools.mapCommandTokens)[command];
 }
 
-std::string Translator::getTokenCell (std::string& token, int num)
+std::string Translator::getTokenCell (std::string & token, int num)
 {
     // данная функция отрезает от входной строки первый токен
     // обособленный пробелами или концами строки
@@ -38,14 +38,14 @@ std::string Translator::getTokenCell (std::string& token, int num)
     std::string answer;
 
     int iter = 0;
-    while ((token[iter] == ' ' || token[iter] == '\t') && iter < token.length()) iter++;
+    while (Tools::CheckSpaceChar(token[iter]) && iter < token.length()) iter++;
 
     if (iter == token.length()) throw Empty(num, "Empty");
 
     token.erase(0, iter);
 
     iter = 0;
-    while (iter < token.size() && (token[iter] != ' ' && token[iter] != '\t')) answer += token[iter++];
+    while (iter < token.size() && !Tools::CheckSpaceChar(token[iter])) answer += token[iter++];
     token.erase(0, iter);
 
     return answer;

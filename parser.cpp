@@ -7,25 +7,14 @@
 
 using namespace std;
 
-//поменять double на float
-
-void Parser::cellParser (string& s, CommandCode& command, int& op1, int& op2, int& op3)
-{
-    command = (CommandCode) Tools::StrToInt(s.substr(0, 5));
-    op1 = Tools::StrToInt(s.substr(5, 9));
-    op2 = Tools::StrToInt(s.substr(14, 9));
-    op3 = Tools::StrToInt(s.substr(23, 9));
-}
-
-
 string Parser::getTokenInt()
 {
     string token;
 
     getline(cin, token);
 
-    while (token[0] == ' ') token.erase(0, 1);
-    while (token[token.length() - 1] == ' ') token.erase(token[token.length() - 1], 1);
+    while (Tools::CheckSpaceChar(token[0])) token.erase(0, 1);
+    while (Tools::CheckSpaceChar(token[token.length() - 1])) token.erase(token[token.length() - 1], 1);
 
     if (token.length() == 0)
         throw Empty(0, "Empty token!");

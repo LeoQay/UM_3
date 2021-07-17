@@ -369,7 +369,7 @@ public:
 
 /*
  *  Basically, this function is launch button
- *  it execute tact one by one before end command or error
+ *  it execute tact one by one before end command or error or breakpoint
  */
     void main_process();
 

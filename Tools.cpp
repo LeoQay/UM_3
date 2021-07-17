@@ -8,38 +8,44 @@ using namespace std;
 
 Tools::Tools()
 {
-    mapCommands = {
-            {"ININT",    ININT   },
-            {"OUTINT",   OUTINT  },
-            {"ADDINT",   ADDINT  },
-            {"SUBINT",   SUBINT  },
-            {"MULINT",   MULINT  },
-            {"DIVINT",   DIVINT  },
-            {"MOD",      MOD     },
-            {"INREAL",   INREAL  },
-            {"OUTREAL",  OUTREAL },
-            {"ADDREAL",  ADDREAL },
-            {"SUBREAL",  SUBREAL },
-            {"MULREAL",  MULREAL },
-            {"DIVREAL",  DIVREAL },
-            {"ITOR",     ITOR    },
-            {"RTOI",     RTOI    },
-            {"JUMP",     JUMP    },
-            {"PR",       PR      },
-            {"PNR",      PNR     },
-            {"PB",       PB      },
-            {"PM",       PM      },
-            {"PBR",      PBR     },
-            {"PMR",      PMR     },
-            {"MOV",      MOV     },
-            {"IF",       IF      },
-            {"END",      END     }
-    };
+    if (mapCommandTokens.empty())
+    {
+        mapCommandTokens = {
+                {"ININT",   ININT},
+                {"OUTINT",  OUTINT},
+                {"ADDINT",  ADDINT},
+                {"SUBINT",  SUBINT},
+                {"MULINT",  MULINT},
+                {"DIVINT",  DIVINT},
+                {"MOD",     MOD},
+                {"INREAL",  INREAL},
+                {"OUTREAL", OUTREAL},
+                {"ADDREAL", ADDREAL},
+                {"SUBREAL", SUBREAL},
+                {"MULREAL", MULREAL},
+                {"DIVREAL", DIVREAL},
+                {"ITOR",    ITOR},
+                {"RTOI",    RTOI},
+                {"JUMP",    JUMP},
+                {"PR",      PR},
+                {"PNR",     PNR},
+                {"PB",      PB},
+                {"PM",      PM},
+                {"PBR",     PBR},
+                {"PMR",     PMR},
+                {"MOV",     MOV},
+                {"IF",      IF},
+                {"END",     END}
+        };
+    }
 
-    SpaceCharSet = {
-            ' ',
-            '\t'
-    };
+    if (SpaceCharSet.empty())
+    {
+        SpaceCharSet = {
+                ' ',
+                '\t'
+        };
+    }
 }
 
 
@@ -134,11 +140,11 @@ bool Tools::stringCmpGE (string s1, string s2)      // return s1 >= s2 ? true : 
 }
 
 
-string Tools::getCommandLexem(CommandCode command)
+string Tools::getCommandToken(CommandCode command)
 {
     Tools tools;
 
-    for (auto & var : tools.mapCommands)
+    for (auto & var : tools.mapCommandTokens)
         if (var.second == command)
             return var.first;
     return "";
@@ -149,6 +155,14 @@ bool Tools::CheckSpaceChar(char word)
     Tools tools;
 
     return tools.SpaceCharSet.find(word) != tools.SpaceCharSet.end();
+}
+
+void Tools::ReadCell (string& cell, CommandCode& command, int& op1, int& op2, int& op3)
+{
+    command = (CommandCode) Tools::StrToInt(cell.substr(0, 5));
+    op1 = Tools::StrToInt(cell.substr(5, 9));
+    op2 = Tools::StrToInt(cell.substr(14, 9));
+    op3 = Tools::StrToInt(cell.substr(23, 9));
 }
 
 

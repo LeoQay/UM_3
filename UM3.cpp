@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     if(argc<4)
     {
         cout << "This program is an implementation of UM-3 computer\n"
-                "We need to run it following file names in argumets:\n"
+                "We need to run it following file names in arguments:\n"
                 "   punched_card.txt -- program code\n"
                 "              (override default memory state)\n"
                 "   log.txt -- file where all commands and operands\n"

@@ -68,17 +68,17 @@ Processor::~Processor()
 
 void Processor::set_PunchedCardFileName(string file_name)
 {
-    punched_card_file_name = file_name;
+    punched_card_file_name = std::move(file_name);
 }
 
 void Processor::set_MemoryFileName(string file_name)
 {
-    memory_file_name = file_name;
+    memory_file_name = std::move(file_name);
 }
 
 void Processor::set_LogFileName(string file_name)
 {
-    log_file_name = file_name;
+    log_file_name = std::move(file_name);
 }
 
 void Processor::set_max_iterations(int num)
@@ -299,7 +299,7 @@ void Processor::divFloat()
 {
     LoadFloatRegisters();
 
-    if (FRegister2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::DIVREAL, op1, op2, op3);
+    if (FRegister2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)RKcommand, op1, op2, op3);
 
     float res = FRegister1 / FRegister2;
 
@@ -322,7 +322,7 @@ void Processor::floatToInt ()
     if (F < minInt || F > maxInt)
     {
         Err = true;
-        throw FTOIOutRange(CurrentCommandAddress, (int)CommandCode::RTOI, op1, op2, op3, F);
+        throw FTOIOutRange(CurrentCommandAddress, (int)RKcommand, op1, op2, op3, F);
     }
 
     memory.pushInt(op1, (int)F);
@@ -407,7 +407,7 @@ bool Processor::tact()
     RA = (RA + 1) % 512;
 
     RK = memory.getStr(CurrentCommandAddress);
-    Parser::cellParser(RK, RKcommand, op1, op2, op3);
+    Tools::ReadCell(RK, RKcommand, op1, op2, op3);
 
     switch (RKcommand)
     {

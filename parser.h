@@ -1,15 +1,12 @@
 #pragma once
 
-#include <map>
-
-#include "Memory.h"
-#include "Tools.h"
-
+/*
+ *  used for console input/output parsing
+ */
 class Parser
 {
 public:
-    static void cellParser (std::string& s, CommandCode& command, int& op1, int& op2, int& op3);
-
-    static std::string getTokenInt();
-    static string getTokenFloat();
+    
+    static std::string getTokenInt  ();
+    static std::string getTokenFloat();
 };
