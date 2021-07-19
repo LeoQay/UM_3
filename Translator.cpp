@@ -112,7 +112,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         }
 
         // командам в памяти ум3 отводится 5 битов
-        result += Tools::IntToStr(command_check(token, cellNumber), 5);
+        result += Tools::IntToStr(command_check(token, cellNumber), 2, 5);
 
         // op1, op2, op3
         for (int i = 0; i < 3; i++)
@@ -145,7 +145,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             }
 
             // каждому операнду отводится по 9 бит
-            result += Tools::IntToStr(token_val, 9);
+            result += Tools::IntToStr(token_val, 2, 9);
         }
 
         mem_obj.pushStr(position, result);

@@ -4,6 +4,7 @@
 
 #include "Processor.h"
 #include "Exception.h"
+#include "Log.h"
 
 using namespace std;
 
@@ -33,6 +34,8 @@ int main(int argc, char* argv[])
      */
 
     Processor processor;
+
+    cout << processor.getMachineState() << "\n";
 
     try
     {

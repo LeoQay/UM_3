@@ -70,8 +70,8 @@ public:
                          );
 
     static string IntToStr (int value,
-                            int length = 32,
-                            int new_system = 2
+                            int new_system = 2,
+                            int length = 32
                             );
 
     static float  StrToFloat (string s     );
@@ -108,10 +108,17 @@ public:
 /*
  *  get information about command in cell
  */
-    static void ReadCell (std::string & cell,
+    static void ReadCell (std::string   cell,
                           CommandCode & command,
                           int         & op1,
                           int         & op2,
                           int         & op3
                           );
+
+    static int getRandomInt ();
+
+    static string getLeftBorderStr (string token,
+                                    int    TotalLength,
+                                    char   space = ' '
+    );
 };

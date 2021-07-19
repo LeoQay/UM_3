@@ -1,6 +1,8 @@
 #include <string>
 #include <map>
 #include <cmath>
+#include <random>
+#include <ctime>
 
 #include "Tools.h"
 
@@ -89,12 +91,12 @@ int Tools::StrToInt (std::string stroka, int origin_system)
 }
 
 
-std::string Tools::IntToStr (int value, int length, int new_system)
+std::string Tools::IntToStr (int value, int new_system, int length)
 {
     auto val = (unsigned int)value;
     string answer;
 
-    for (int i = 0; i < length; i++)
+    while (val != 0 || answer.length() < length)
     {
         answer.insert(0, 1, (char)('0' + val % new_system));
         val /= new_system;
@@ -147,7 +149,7 @@ string Tools::getCommandToken(CommandCode command)
     for (auto & var : tools.mapCommandTokens)
         if (var.second == command)
             return var.first;
-    return "";
+    return Tools::IntToStr((int)command, 10, 0);
 }
 
 bool Tools::CheckSpaceChar(char word)
@@ -157,12 +159,39 @@ bool Tools::CheckSpaceChar(char word)
     return tools.SpaceCharSet.find(word) != tools.SpaceCharSet.end();
 }
 
-void Tools::ReadCell (string& cell, CommandCode& command, int& op1, int& op2, int& op3)
+void Tools::ReadCell (string cell, CommandCode& command, int& op1, int& op2, int& op3)
 {
     command = (CommandCode) Tools::StrToInt(cell.substr(0, 5));
     op1 = Tools::StrToInt(cell.substr(5, 9));
     op2 = Tools::StrToInt(cell.substr(14, 9));
     op3 = Tools::StrToInt(cell.substr(23, 9));
+}
+
+int Tools::getRandomInt()
+{
+    static long long seed = time(nullptr);
+
+    std::mt19937 gen(seed);
+
+    std::uniform_int_distribution<> dist(-2147483648, 2147483647);
+
+    dist(gen);
+
+    seed = dist(gen);
+
+    // сброс плохого числа, испорченного из-за time
+
+    return dist(gen);
+}
+
+string Tools::getLeftBorderStr(string token, int TotalLength, char space)
+{
+    int kol = TotalLength - token.length();
+
+    for (int i = 0; i < kol; i++)
+        token = space + token;
+
+    return token;
 }
 
 

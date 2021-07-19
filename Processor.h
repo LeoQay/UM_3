@@ -331,8 +331,11 @@ private:
 /*
  *  Auxiliary functions that are used to load numbers from memory into the ALU registers
  */
-    void LoadIntRegisters ();
+    void LoadIntRegisters   ();
     void LoadFloatRegisters ();
+
+    void LoadSummator (int   value);
+    void LoadSummator (float value);
 
 /*
  *  This function used for warning about overflow in integer calculations
@@ -378,4 +381,6 @@ public:
     void set_LogFileName (string file_name);
     void set_max_iterations(int num);
     void set_BreakPoint (int NewBreakPoint);
+
+    string getMachineState ();
 };

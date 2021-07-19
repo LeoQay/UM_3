@@ -20,7 +20,7 @@ enum InitMemory {
 class Memory
 {
 private:
-    int memory_size = 512;
+    const int memory_size = 512;
 
 /*
  *  Basically, it is memory which contain all cells

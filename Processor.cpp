@@ -1,13 +1,13 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
-#include <random>
 
 #include "Processor.h"
 #include "Tools.h"
 #include "Translator.h"
 #include "Parser.h"
 #include "Exception.h"
+#include "Log.h"
 
 void Processor::omega_res(int res)
 {
@@ -21,18 +21,16 @@ void Processor::omega_res(float res)
 
 Processor::Processor()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(-2147483648, 2147483647);
+    Register1 = Tools::getRandomInt();
+    Register2 = Tools::getRandomInt();
+    Summator = Tools::getRandomInt();
 
-    Register1 = dist(gen);
-    Register2 = dist(gen);
-    Summator = dist(gen);
+    FRegister1 = Tools::IntToFloat(Tools::getRandomInt());
+    FRegister2 = Tools::IntToFloat(Tools::getRandomInt());
+    FSummator = Tools::IntToFloat(Tools::getRandomInt());
 
-    int buf1 = dist(gen), buf2 = dist(gen), buf3 = dist(gen);
-    FRegister1 = Tools::IntToFloat(buf1);
-    FRegister2 = Tools::IntToFloat(buf2);
-    FSummator = Tools::IntToFloat(buf3);
+    RK = Tools::IntToStr(Tools::getRandomInt());
+    Tools::ReadCell(RK, RKcommand, op1, op2, op3);
 
     RA = 1;
     CurrentCommandAddress = 1;
@@ -41,9 +39,6 @@ Processor::Processor()
     Err = false;
 
     omega = 0;
-
-    RKcommand = CommandCode::END;
-    op1 = 0, op2 = 0, op3 = 0;
 
 /*
  * если не установить максимальное число итераций,
@@ -155,7 +150,8 @@ void Processor::addInt()
 
     omega_res((int)res);
 
-    Summator = (int)res;
+    LoadSummator((int)res);
+
     memory.pushInt(op1, Summator);
 }
 
@@ -168,7 +164,8 @@ void Processor::subInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = (int)res;
+
+    LoadSummator((int)res);
 
     memory.pushInt(op1, Summator);
 }
@@ -182,7 +179,9 @@ void Processor::mulInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = (int)res;
+
+    LoadSummator((int)res);
+
     memory.pushInt(op1, Summator);
 }
 
@@ -197,7 +196,9 @@ void Processor::divInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = (int)res;
+
+    LoadSummator((int)res);
+
     memory.pushInt(op1, Summator);
 }
 
@@ -212,7 +213,9 @@ void Processor::modInt()
     OutRangeChecker(res);
 
     omega_res((int)res);
-    Summator = (int)res;
+
+    LoadSummator((int)res);
+
     memory.pushInt(op1, Summator);
 }
 
@@ -227,19 +230,19 @@ void Processor::inFloat()
     {
         bool ok = false;
 
-        cout << "Input real to " << "<"<<address<<">" << ":";
-
         while (!ok)
         {
             try {
+                cout << "Input real to " << "<"<<address<<">" << ":";
+
                 string token = Parser::getTokenFloat();
                 stringstream sss(token);
                 sss >> value;
                 ok = true;
             }
 
-            catch (Exception &err) {
-                cout << err.what() << "\nRewrite please:";
+            catch (Exception & err) {
+                cout << err.what() << "\n";
             }
         }
 
@@ -268,7 +271,8 @@ void Processor::addFloat()
 
     omega_res(res);
 
-    FSummator = res;
+    LoadSummator(res);
+
     memory.pushFloat(op1, FSummator);
 }
 
@@ -279,7 +283,7 @@ void Processor::subFloat()
 
     omega_res(res);
 
-    FSummator = res;
+    LoadSummator(res);
 
     memory.pushFloat(op1, FSummator);
 }
@@ -291,7 +295,8 @@ void Processor::mulFloat()
 
     omega_res(res);
 
-    FSummator = res;
+    LoadSummator(res);
+
     memory.pushFloat(op1, FSummator);
 }
 
@@ -305,7 +310,8 @@ void Processor::divFloat()
 
     omega_res(res);
 
-    FSummator = res;
+    LoadSummator(res);
+
     memory.pushFloat(op1, FSummator);
 }
 
@@ -503,12 +509,29 @@ void Processor::LoadIntRegisters()
     Register1 = memory.getInt(op2);
     Register2 = memory.getInt(op3);
 
+    FRegister1 = Tools::IntToFloat(Register1);
+    FRegister2 = Tools::IntToFloat(Register2);
 }
 
 void Processor::LoadFloatRegisters()
 {
     FRegister1 = memory.getFloat(op2);
     FRegister2 = memory.getFloat(op3);
+
+    Register1 = Tools::FloatToInt(FRegister1);
+    Register2 = Tools::FloatToInt(FRegister2);
+}
+
+void Processor::LoadSummator(int value)
+{
+    Summator  = value;
+    FSummator = Tools::IntToFloat(value);
+}
+
+void Processor::LoadSummator(float value)
+{
+    FSummator = value;
+    Summator  = Tools::FloatToInt(value);
 }
 
 void Processor::OutRangeChecker(long long res)
@@ -523,4 +546,16 @@ void Processor::OutRangeChecker(long long res)
 void Processor::BreakPointChecker()
 {
 
+}
+
+string Processor::getMachineState()
+{
+    Log log;
+    string token;
+    token += log.getTitle() + "\n" +
+             log.getValueStr("R1", Register1) + "\n" +
+             log.getValueStr("R2", Register2) + "\n" +
+             log.getValueStr("Summator", Summator) + "\n" +
+             log.getValueStr("RK", Tools::StrToInt(RK)) + "\n";
+    return token;
 }
