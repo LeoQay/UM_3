@@ -1,6 +1,5 @@
 #include <string>
 #include <map>
-#include <cmath>
 #include <random>
 #include <ctime>
 
@@ -96,7 +95,7 @@ std::string Tools::IntToStr (int value, int new_system, int length)
     auto val = (unsigned int)value;
     string answer;
 
-    while (val != 0 || answer.length() < length)
+    while (val != 0 || answer.length() < length || answer.length() == 0)
     {
         answer.insert(0, 1, (char)('0' + val % new_system));
         val /= new_system;
@@ -179,12 +178,10 @@ int Tools::getRandomInt()
 
     seed = dist(gen);
 
-    // сброс плохого числа, испорченного из-за time
-
     return dist(gen);
 }
 
-string Tools::getLeftBorderStr(string token, int TotalLength, char space)
+string Tools::getRightBorderStr(string token, int TotalLength, char space)
 {
     int kol = TotalLength - token.length();
 

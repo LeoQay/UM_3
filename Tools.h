@@ -117,8 +117,8 @@ public:
 
     static int getRandomInt ();
 
-    static string getLeftBorderStr (string token,
-                                    int    TotalLength,
-                                    char   space = ' '
+    static string getRightBorderStr (string token,
+                                     int    TotalLength,
+                                     char   space = ' '
     );
 };

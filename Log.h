@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 using namespace std;
@@ -32,9 +34,22 @@ private:
     string getCommand (int value);
 
 public:
-    string getTitle ();
+    static string getTitle ();
 
-    string getValueStr (string name,
-                        int    value
-                        );
+    static string getValueStr (string name,
+                               int    value
+                               );
+
+    static string BinaryOperator (string RK,
+                                  int    addressOP2,
+                                  int    addressOP3,
+                                  int    valueOP2,
+                                  int    valueOP3
+                                  );
+
+    static string getAddressToken (int address);
+
+    static string getNiceCommand (int    address,
+                                  string RK
+                                  );
 };

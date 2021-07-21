@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 #include <sstream>
 
 #include "Processor.h"
@@ -23,11 +22,11 @@ Processor::Processor()
 {
     Register1 = Tools::getRandomInt();
     Register2 = Tools::getRandomInt();
-    Summator = Tools::getRandomInt();
+    Summator  = Tools::getRandomInt();
 
     FRegister1 = Tools::IntToFloat(Tools::getRandomInt());
     FRegister2 = Tools::IntToFloat(Tools::getRandomInt());
-    FSummator = Tools::IntToFloat(Tools::getRandomInt());
+    FSummator  = Tools::IntToFloat(Tools::getRandomInt());
 
     RK = Tools::IntToStr(Tools::getRandomInt());
     Tools::ReadCell(RK, RKcommand, op1, op2, op3);
@@ -54,6 +53,9 @@ Processor::Processor()
     punched_card_file_name = "punched_card.txt";
     memory_file_name       = "memory.txt";
     log_file_name          = "";
+
+    cout << "INITIAL MACHINE STATE" << "\n"
+         << getMachineState() << "\n";
 }
 
 Processor::~Processor()
@@ -106,11 +108,11 @@ void Processor::inInt()
     {
         bool ok = false;
 
-        cout << "Input int to " << "<"<<address<<">" << ":";
-
         while (!ok)
         {
             try {
+                cout << "Input int to " << "<"<<address<<">" << ":";
+
                 string token = Parser::getTokenInt();
 
                 value = Tools::StrToInt(token, 10);
@@ -118,8 +120,8 @@ void Processor::inInt()
                 ok = true;
             }
 
-            catch (Exception &err) {
-                cout << err.what() << "\nRewrite please:";
+            catch (Exception & err) {
+                cout << err.what() << "\n";
             }
         }
 
@@ -415,6 +417,8 @@ bool Processor::tact()
     RK = memory.getStr(CurrentCommandAddress);
     Tools::ReadCell(RK, RKcommand, op1, op2, op3);
 
+    cout << "\n" << Log::getNiceCommand(CurrentCommandAddress, RK) << "\n\n";
+
     switch (RKcommand)
     {
         case CommandCode::ININT:
@@ -494,6 +498,10 @@ bool Processor::tact()
         default:
             throw Bad_command(CurrentCommandAddress, (int)RKcommand, op1, op2, op3);
     }
+
+    cout << "\n" << "MACHINE STATE AFTER " << iterations << " TACTS" << "\n"
+         << getMachineState() << "\n";
+
     return true;
 }
 
@@ -511,6 +519,8 @@ void Processor::LoadIntRegisters()
 
     FRegister1 = Tools::IntToFloat(Register1);
     FRegister2 = Tools::IntToFloat(Register2);
+
+    cout << Log::BinaryOperator(RK, op2, op3, Register1, Register2) << "\n";
 }
 
 void Processor::LoadFloatRegisters()
@@ -520,18 +530,24 @@ void Processor::LoadFloatRegisters()
 
     Register1 = Tools::FloatToInt(FRegister1);
     Register2 = Tools::FloatToInt(FRegister2);
+
+    cout << Log::BinaryOperator(RK, op2, op3, Register1, Register2) << "\n";
 }
 
 void Processor::LoadSummator(int value)
 {
     Summator  = value;
     FSummator = Tools::IntToFloat(value);
+
+    cout << Log::getValueStr(Log::getAddressToken(op1), Summator) << "\n";
 }
 
 void Processor::LoadSummator(float value)
 {
     FSummator = value;
     Summator  = Tools::FloatToInt(value);
+
+    cout << Log::getValueStr(Log::getAddressToken(op1), Summator) << "\n";
 }
 
 void Processor::OutRangeChecker(long long res)
@@ -550,12 +566,11 @@ void Processor::BreakPointChecker()
 
 string Processor::getMachineState()
 {
-    Log log;
     string token;
-    token += log.getTitle() + "\n" +
-             log.getValueStr("R1", Register1) + "\n" +
-             log.getValueStr("R2", Register2) + "\n" +
-             log.getValueStr("Summator", Summator) + "\n" +
-             log.getValueStr("RK", Tools::StrToInt(RK)) + "\n";
+    token += Log::getTitle() + "\n" +
+             Log::getValueStr("R1", Register1) + "\n" +
+             Log::getValueStr("R2", Register2) + "\n" +
+             Log::getValueStr("Summator", Summator) + "\n" +
+             Log::getValueStr("RK", Tools::StrToInt(RK));
     return token;
 }
