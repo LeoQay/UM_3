@@ -4,6 +4,7 @@
 
 #include "Memory.h"
 #include "Tools.h"
+#include "Config.h"
 
 using namespace std;
 
@@ -14,6 +15,8 @@ private:
  *  memory - this is an object for storing memory
  */
     Memory memory;
+
+    Config config;
 
 /*
  *  It's ALU (arithmetic logic unit) registers
@@ -86,13 +89,6 @@ private:
  */
     long long maxInt;
     long long minInt;
-
-/*
- *  names of input/output files
- */
-    string punched_card_file_name;
-    string memory_file_name;
-    string log_file_name;
 
 /*
  *  functions for updating omega after new result

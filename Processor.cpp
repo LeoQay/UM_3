@@ -7,6 +7,7 @@
 #include "Parser.h"
 #include "Exception.h"
 #include "Log.h"
+#include "Config.h"
 
 void Processor::omega_res(int res)
 {
@@ -24,9 +25,9 @@ Processor::Processor()
     Register2 = Tools::getRandomInt();
     Summator  = Tools::getRandomInt();
 
-    FRegister1 = Tools::IntToFloat(Tools::getRandomInt());
-    FRegister2 = Tools::IntToFloat(Tools::getRandomInt());
-    FSummator  = Tools::IntToFloat(Tools::getRandomInt());
+    FRegister1 = Tools::IntToFloat(Register1);
+    FRegister2 = Tools::IntToFloat(Register2);
+    FSummator  = Tools::IntToFloat(Summator);
 
     RK = Tools::IntToStr(Tools::getRandomInt());
     Tools::ReadCell(RK, RKcommand, op1, op2, op3);
@@ -50,9 +51,9 @@ Processor::Processor()
     maxInt = 2147483647ll;
     minInt = -2147483648ll;
 
-    punched_card_file_name = "punched_card.txt";
-    memory_file_name       = "memory.txt";
-    log_file_name          = "";
+    config.punched_card_file_name = "punched_card.txt";
+    config.memory_file_name       = "memory.txt";
+    config.log_file_name          = "";
 
     cout << "INITIAL MACHINE STATE" << "\n"
          << getMachineState() << "\n";
@@ -65,17 +66,17 @@ Processor::~Processor()
 
 void Processor::set_PunchedCardFileName(string file_name)
 {
-    punched_card_file_name = std::move(file_name);
+    config.punched_card_file_name = std::move(file_name);
 }
 
 void Processor::set_MemoryFileName(string file_name)
 {
-    memory_file_name = std::move(file_name);
+    config.memory_file_name = std::move(file_name);
 }
 
 void Processor::set_LogFileName(string file_name)
 {
-    log_file_name = std::move(file_name);
+    config.log_file_name = std::move(file_name);
 }
 
 void Processor::set_max_iterations(int num)
@@ -90,12 +91,12 @@ void Processor::set_BreakPoint(int NewBreakPoint)
 
 void Processor::Load_PunchedCard()
 {
-    Translator::Translate(punched_card_file_name, memory);
+    Translator::Translate(config.punched_card_file_name, memory);
 }
 
 void Processor::outMemory()
 {
-    memory.outNiceMemory(memory_file_name);
+    memory.outNiceMemory(config.memory_file_name);
 }
 
 void Processor::inInt()

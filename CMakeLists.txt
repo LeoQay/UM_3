@@ -10,4 +10,4 @@ add_executable(UM-3 UM3.cpp
                    Processor.cpp  Processor.h
                    Translator.cpp Translator.h
                    Tools.cpp      Tools.h
-        Log.cpp Log.h)
+        Log.cpp Log.h Config.cpp Config.h)

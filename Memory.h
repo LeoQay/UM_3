@@ -1,17 +1,6 @@
 #pragma once
 
-/*
- *  Enum contain names of initial memory modes
- *  Random - all memory fulling randomly
- *  Zeros  - all cells in memory equal zero
- *  Custom - memory loading from user file
- */
-enum InitMemory {
-    Random,
-    Zeros,
-    Custom
-};
-
+#include "Config.h"
 
 /*
  *  Class interacts with memory
@@ -27,7 +16,7 @@ private:
  */
     int memory_mas[512];
 public:
-    Memory(InitMemory mode = Random);
+    Memory(InitMemoryMode mode = Random);
 
 /*
  *  Each cell can be perceived as integer or as float,

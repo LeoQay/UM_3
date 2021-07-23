@@ -4,10 +4,11 @@
 
 #include "Memory.h"
 #include "Tools.h"
+#include "Config.h"
 
 using namespace std;
 
-Memory::Memory(InitMemory mode)
+Memory::Memory(InitMemoryMode mode)
 {
     if (mode == Random)
     {

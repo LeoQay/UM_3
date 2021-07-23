@@ -190,6 +190,3 @@ string Tools::getRightBorderStr(string token, int TotalLength, char space)
 
     return token;
 }
-
-
-
