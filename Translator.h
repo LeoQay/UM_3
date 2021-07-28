@@ -11,10 +11,6 @@ private:
                               int         num
                               );
 
-    static std::string getTokenCell (std::string & token,
-                                     int           num
-                                     );
-
 public:
 
 /*

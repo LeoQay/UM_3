@@ -29,27 +29,6 @@ int Translator::command_check (std::string command, int num)
     return (tools.mapCommandTokens)[command];
 }
 
-std::string Translator::getTokenCell (std::string & token, int num)
-{
-    // данная функция отрезает от входной строки первый токен
-    // обособленный пробелами или концами строки
-    // если строка пуста или состоит из пробелов, бросается исключение
-
-    std::string answer;
-
-    int iter = 0;
-    while (Tools::CheckSpaceChar(token[iter]) && iter < token.length()) iter++;
-
-    if (iter == token.length()) throw Empty(num, "Empty");
-
-    token.erase(0, iter);
-
-    iter = 0;
-    while (iter < token.size() && !Tools::CheckSpaceChar(token[iter])) answer += token[iter++];
-    token.erase(0, iter);
-
-    return answer;
-}
 
 void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
 {
@@ -71,15 +50,15 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         getline(fin, cell);
 
         // удаление комментариев
-        unsigned int comment_pos = cell.find(';');
+        int comment_pos = cell.find(';');
         if (comment_pos != -1)
-            cell.erase(comment_pos, cell.length() - comment_pos);
+            cell.erase(comment_pos);
 
         //  парсинг номера ячейки
         try{
-            token = Translator::getTokenCell(cell, cellNumber);
+            token = Tools::getToken(cell);
         }
-        catch (Empty&)
+        catch (Empty &)
         {
             continue;
         }
@@ -102,10 +81,10 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
 
         //   команда
         try {
-            token = getTokenCell(cell, cellNumber);
+            token = Tools::getToken(cell);
         }
 
-        catch (Empty&)
+        catch (Empty &)
         {
             fin.close();
             throw Empty(cellNumber, "Empty command!");
@@ -120,10 +99,10 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             string opi = "op1"; opi[2] += i;
 
             try{
-                token = getTokenCell(cell, cellNumber);
+                token = Tools::getToken(cell);
             }
 
-            catch (Empty&)
+            catch (Empty &)
             {
                 fin.close();
                 throw Empty(cellNumber, "Empty " + opi + "!");

@@ -100,6 +100,12 @@ public:
  */
     static string getCommandToken (CommandCode command);
 
+
+
+    static std::string getToken (std::string & token);
+
+
+
 /*
  *  return true if character exist in SpaceCharSet
  */

@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "Tools.h"
+#include "Exception.h"
 
 using namespace std;
 
@@ -189,4 +190,27 @@ string Tools::getRightBorderStr(string token, int TotalLength, char space)
         token = space + token;
 
     return token;
+}
+
+
+std::string Tools::getToken (std::string & token)
+{
+    // данная функция отрезает от входной строки первый токен
+    // обособленный пробелами или концами строки
+    // если строка пуста или состоит из пробелов, бросается исключение
+
+    std::string answer;
+
+    int iter = 0;
+    while (Tools::CheckSpaceChar(token[iter]) && iter < token.length()) iter++;
+
+    if (iter == token.length()) throw Empty(-1, "Empty");
+
+    token.erase(0, iter);
+
+    iter = 0;
+    while (iter < token.size() && !Tools::CheckSpaceChar(token[iter])) answer += token[iter++];
+    token.erase(0, iter);
+
+    return answer;
 }
