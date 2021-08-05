@@ -16,15 +16,15 @@ string Parser::getTokenInt()
     while (Tools::CheckSpaceChar(token[token.length() - 1])) token.erase(token[token.length() - 1], 1);
 
     if (token.length() == 0)
-        throw Empty(0, "Empty token!");
+        throw InputEmptyToken();
 
     if (!Tools::number(token))
-        throw Bad_token(0, token, "Bad int token!");
+        throw InvalidIntToken(token);
 
     string minIntStr = "-2147483648", maxIntStr = "2147483647";
 
     if (!(Tools::stringCmpGE(token, minIntStr) && Tools::stringCmpGE(maxIntStr, token)))
-        throw Bad_token(0, token, "Int Out Range!");
+        throw InvalidIntToken(token, "Int Out Range!");
 
     return token;
 }
@@ -42,24 +42,24 @@ string Parser::getTokenFloat()
         token.erase(token[token.length() - 1], 1);
 
     if (token.length() == 0)
-        throw Empty(0, "Empty token!");
+        throw InputEmptyToken();
 
     int commaPos = (int)token.find('.');
 
     if (commaPos == -1)
     {
         if (!Tools::number(token))
-            throw Bad_token(0, token, "Bad float token!");
+            throw InvalidFloatToken(token);
     }else if (commaPos == token.length() - 1)
     {
         if (!Tools::number(token.substr(0, commaPos)))
-            throw Bad_token(0, token, "Bad float token!");
+            throw InvalidFloatToken(token);
     }else
     {
         if (!Tools::number(token.substr(0, commaPos)) ||
             token[commaPos + 1] == '-' ||
             !Tools::number(token.substr(commaPos + 1, token.length() - commaPos)))
-            throw Bad_token(0, token, "Bad float token!");
+            throw InvalidFloatToken(token);
     }
 
     return token;

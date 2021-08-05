@@ -15,8 +15,16 @@ private:
  *  Basically, it is memory which contain all cells
  */
     int memory_mas[512];
+
+
+    void random_init_memory();
+
+    void zeros_init_memory();
+
 public:
-    Memory(InitMemoryMode mode = Random);
+    Memory();
+
+    void init_memory(InitMemoryMode mode = Random);
 
 /*
  *  Each cell can be perceived as integer or as float,
@@ -32,16 +40,16 @@ public:
     float       getFloat (int index);
     std::string getStr   (int index);
 
-    void pushStr(int         index,
-                 std::string new_val
+    void push(int         index,
+              std::string new_val
                  );
 
-    void pushInt(int index,
-                 int value
+    void push(int index,
+              int value
                  );
 
-    void pushFloat(int   index,
-                   float value
+    void push(int   index,
+              float value
                    );
 
 /*

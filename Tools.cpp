@@ -204,7 +204,7 @@ std::string Tools::getToken (std::string & token)
     int iter = 0;
     while (Tools::CheckSpaceChar(token[iter]) && iter < token.length()) iter++;
 
-    if (iter == token.length()) throw Empty(-1, "Empty");
+    if (iter == token.length()) throw EmptyFieldToken(-1, "Field");
 
     token.erase(0, iter);
 

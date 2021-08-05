@@ -10,9 +10,16 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    setlocale(LC_ALL, "Russian");
+    Config config;
 
-    char* first_arg = argv[1];
+    try {
+        config.loadConfigFile();
+    }
+
+    catch (Exception & err)
+    {
+        cout << "\n" << err.what() << "\n";
+    }
 
     Processor processor;
 
@@ -23,8 +30,7 @@ int main(int argc, char* argv[])
 
     catch (Exception & err)
     {
-        cout << "Error in the line " << err.cell_number << "\n" << err.what() << "\n";
-
+        cout << "\n" << err.what() << "\n";
         return 1;
     }
 
@@ -34,8 +40,7 @@ int main(int argc, char* argv[])
 
     catch (Exception & err)
     {
-        cout << "Error in the cell " << err.cell_number << "\n" << err.what() << "\n";
-
+        cout << "\n" << err.what() << "\n";
         return 1;
     }
 

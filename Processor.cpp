@@ -51,10 +51,6 @@ Processor::Processor()
     maxInt = 2147483647ll;
     minInt = -2147483648ll;
 
-    config.punched_card_file_name = "punched_card.txt";
-    config.memory_file_name       = "memory.txt";
-    config.log_file_name          = "";
-
     cout << "INITIAL MACHINE STATE" << "\n"
          << getMachineState() << "\n";
 }
@@ -62,21 +58,6 @@ Processor::Processor()
 Processor::~Processor()
 {
 
-}
-
-void Processor::set_PunchedCardFileName(string file_name)
-{
-    config.punched_card_file_name = std::move(file_name);
-}
-
-void Processor::set_MemoryFileName(string file_name)
-{
-    config.memory_file_name = std::move(file_name);
-}
-
-void Processor::set_LogFileName(string file_name)
-{
-    config.log_file_name = std::move(file_name);
 }
 
 void Processor::set_max_iterations(int num)
@@ -91,12 +72,12 @@ void Processor::set_BreakPoint(int NewBreakPoint)
 
 void Processor::Load_PunchedCard()
 {
-    Translator::Translate(config.punched_card_file_name, memory);
+    Translator::Translate(config.get_punched_card_file_name(), memory);
 }
 
 void Processor::outMemory()
 {
-    memory.outNiceMemory(config.memory_file_name);
+    memory.outNiceMemory(config.get_memory_file_name());
 }
 
 void Processor::inInt()
@@ -126,7 +107,7 @@ void Processor::inInt()
             }
         }
 
-        memory.pushInt(address, value);
+        memory.push(address, value);
         address = (address + 1) % 512;
     }
 }
@@ -155,7 +136,7 @@ void Processor::addInt()
 
     LoadSummator((int)res);
 
-    memory.pushInt(op1, Summator);
+    memory.push(op1, Summator);
 }
 
 void Processor::subInt()
@@ -170,7 +151,7 @@ void Processor::subInt()
 
     LoadSummator((int)res);
 
-    memory.pushInt(op1, Summator);
+    memory.push(op1, Summator);
 }
 
 void Processor::mulInt()
@@ -185,14 +166,14 @@ void Processor::mulInt()
 
     LoadSummator((int)res);
 
-    memory.pushInt(op1, Summator);
+    memory.push(op1, Summator);
 }
 
 void Processor::divInt()
 {
     LoadIntRegisters();
 
-    if (Register2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::DIVINT, op1, op2, op3);
+    if (Register2 == 0) throw NullDivide(CurrentCommandAddress, RK);
 
     long long res = (long long)Register1 / (long long)Register2;
 
@@ -202,14 +183,14 @@ void Processor::divInt()
 
     LoadSummator((int)res);
 
-    memory.pushInt(op1, Summator);
+    memory.push(op1, Summator);
 }
 
 void Processor::modInt()
 {
     LoadIntRegisters();
 
-    if (Register2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)CommandCode::MOD, op1, op2, op3);
+    if (Register2 == 0) throw NullDivide(CurrentCommandAddress, RK);
 
     long long res = (long long)Register1 % (long long)Register2;
 
@@ -219,7 +200,7 @@ void Processor::modInt()
 
     LoadSummator((int)res);
 
-    memory.pushInt(op1, Summator);
+    memory.push(op1, Summator);
 }
 
 void Processor::inFloat()
@@ -249,7 +230,7 @@ void Processor::inFloat()
             }
         }
 
-        memory.pushFloat(address, value);
+        memory.push(address, value);
         address = (address + 1) % 512;
     }
 }
@@ -276,7 +257,7 @@ void Processor::addFloat()
 
     LoadSummator(res);
 
-    memory.pushFloat(op1, FSummator);
+    memory.push(op1, FSummator);
 }
 
 void Processor::subFloat()
@@ -288,7 +269,7 @@ void Processor::subFloat()
 
     LoadSummator(res);
 
-    memory.pushFloat(op1, FSummator);
+    memory.push(op1, FSummator);
 }
 
 void Processor::mulFloat()
@@ -300,14 +281,14 @@ void Processor::mulFloat()
 
     LoadSummator(res);
 
-    memory.pushFloat(op1, FSummator);
+    memory.push(op1, FSummator);
 }
 
 void Processor::divFloat()
 {
     LoadFloatRegisters();
 
-    if (FRegister2 == 0) throw NULL_DIVIDE(CurrentCommandAddress, (int)RKcommand, op1, op2, op3);
+    if (FRegister2 == 0) throw NullDivide(CurrentCommandAddress, RK);
 
     float res = FRegister1 / FRegister2;
 
@@ -315,13 +296,13 @@ void Processor::divFloat()
 
     LoadSummator(res);
 
-    memory.pushFloat(op1, FSummator);
+    memory.push(op1, FSummator);
 }
 
 void Processor::intToFloat ()
 {
     float value = (float)memory.getInt(op3);
-    memory.pushFloat(op1, value);
+    memory.push(op1, value);
 }
 
 void Processor::floatToInt ()
@@ -331,10 +312,10 @@ void Processor::floatToInt ()
     if (F < minInt || F > maxInt)
     {
         Err = true;
-        throw FTOIOutRange(CurrentCommandAddress, (int)RKcommand, op1, op2, op3, F);
+        throw FloatToIntOutRange(CurrentCommandAddress, RK, F);
     }
 
-    memory.pushInt(op1, (int)F);
+    memory.push(op1, (int) F);
 }
 
 void Processor::unconditional ()
@@ -407,7 +388,7 @@ void Processor::conditional ()
 
 void Processor::mov()
 {
-    memory.pushInt(op1, memory.getInt(op3));
+    memory.push(op1, memory.getInt(op3));
 }
 
 bool Processor::tact()
@@ -497,7 +478,7 @@ bool Processor::tact()
         case CommandCode::END:
             return false;
         default:
-            throw Bad_command(CurrentCommandAddress, (int)RKcommand, op1, op2, op3);
+            throw UndefinedCommand(CurrentCommandAddress, (int)RKcommand, RK);
     }
 
     cout << "\n" << "MACHINE STATE AFTER " << iterations << " TACTS" << "\n"
@@ -555,8 +536,8 @@ void Processor::OutRangeChecker(long long res)
 {
     if (res < minInt || res > maxInt)
     {
-        MathOutRange obj(CurrentCommandAddress, (int)RKcommand, op1, op2, op3, Register1, Register2);
-        cout << "Warning!\n" << obj.what() << "\n";
+        IntOutRange exception_opj(CurrentCommandAddress, RK, Register1, Register2, res);
+        cout << "Warning!" << "\n" << exception_opj.what() << "\n";
     }
 }
 
@@ -568,10 +549,10 @@ void Processor::BreakPointChecker()
 string Processor::getMachineState()
 {
     string token;
-    token += Log::getTitle() + "\n" +
-             Log::getValueStr("R1", Register1) + "\n" +
-             Log::getValueStr("R2", Register2) + "\n" +
-             Log::getValueStr("Summator", Summator) + "\n" +
-             Log::getValueStr("RK", Tools::StrToInt(RK));
+    token += Log::getTitle()                                                + "\n" +
+             Log::getValueStr(      "R1", Register1)                  + "\n" +
+             Log::getValueStr(      "R2", Register2)                  + "\n" +
+             Log::getValueStr("Summator",  Summator)                  + "\n" +
+             Log::getValueStr(      "RK", Tools::StrToInt(RK));
     return token;
 }

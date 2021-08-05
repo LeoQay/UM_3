@@ -372,9 +372,7 @@ public:
  */
     void main_process();
 
-    void set_PunchedCardFileName (string file_name);
-    void set_MemoryFileName (string file_name);
-    void set_LogFileName (string file_name);
+
     void set_max_iterations(int num);
     void set_BreakPoint (int NewBreakPoint);
 

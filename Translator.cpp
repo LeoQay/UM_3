@@ -15,7 +15,7 @@ int Translator::command_check (std::string command, int num)
         if (answer >= 0 && answer <= 31)
             return answer;
         else
-            throw IndexOutRange(num, answer, "Out range of command!");
+            throw CommandOutRange(num, answer);
     }
 
     // сюда попадем только, если команда - не число
@@ -24,7 +24,7 @@ int Translator::command_check (std::string command, int num)
     Tools tools;
 
     if ((tools.mapCommandTokens).find(command) == (tools.mapCommandTokens).end())
-        throw Bad_token(num, command, "Bad token of command!");
+        throw InvalidCommandToken(num, command);
 
     return (tools.mapCommandTokens)[command];
 }
@@ -58,7 +58,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         try{
             token = Tools::getToken(cell);
         }
-        catch (Empty &)
+        catch (EmptyFieldToken &)
         {
             continue;
         }
@@ -67,7 +67,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         if (!Tools::number(token))
         {
             fin.close();
-            throw Bad_token(cellNumber, token, "Bad token of cell number!");
+            throw InvalidAddressToken(cellNumber, token);
         }
 
         // все-таки числовая, проверим на выход за диапазон
@@ -76,7 +76,7 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         if (position > 511 || position < 0)
         {
             fin.close();
-            throw IndexOutRange(cellNumber, position, "Cell number out range!");
+            throw AddressOutRange(cellNumber, position, "Cell number out range!");
         }
 
         //   команда
@@ -84,10 +84,10 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             token = Tools::getToken(cell);
         }
 
-        catch (Empty &)
+        catch (EmptyFieldToken &)
         {
             fin.close();
-            throw Empty(cellNumber, "Empty command!");
+            throw EmptyFieldToken(cellNumber, "Command");
         }
 
         // командам в памяти ум3 отводится 5 битов
@@ -96,23 +96,23 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         // op1, op2, op3
         for (int i = 0; i < 3; i++)
         {
-            string opi = "op1"; opi[2] += i;
+            string opi = "Operand1"; opi[2] += i;
 
             try{
                 token = Tools::getToken(cell);
             }
 
-            catch (Empty &)
+            catch (EmptyFieldToken &)
             {
                 fin.close();
-                throw Empty(cellNumber, "Empty " + opi + "!");
+                throw EmptyFieldToken(cellNumber, opi);
             }
 
             // адреса операндов должны быть числами
             if (!Tools::number(token))
             {
                 fin.close();
-                throw Bad_token(cellNumber, token, "Bad token of " + opi + "!");
+                throw InvalidAddressToken(cellNumber, token);
             }
 
             int token_val = Tools::StrToInt(token, 10);
@@ -120,14 +120,14 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
             if (token_val > 511 || token_val < 0)
             {
                 fin.close();
-                throw IndexOutRange(cellNumber, token_val, "Index out range " + opi + "!");
+                throw AddressOutRange(cellNumber, token_val);
             }
 
             // каждому операнду отводится по 9 бит
             result += Tools::IntToStr(token_val, 2, 9);
         }
 
-        mem_obj.pushStr(position, result);
+        mem_obj.push(position, result);
     }
 
     fin.close();

@@ -3,183 +3,240 @@
 #include <exception>
 #include <string>
 
+using namespace std;
+
+
 class Exception : std::exception
 {
 protected:
-    std::string message;
+    string message;
+    string output_message;
 public:
-    int cell_number;
-
-    explicit Exception (int         num,
-                        std::string message = "Error!"
-                        );
+    explicit Exception(string message = "Exception");
 
     const char* what() noexcept;
 };
 
-class ParserException : public Exception
+
+class TranslatorException : public Exception
 {
+protected:
+    int error_line_number;
 public:
-    explicit ParserException (int         num,
-                              std::string message = "Bad cell!"
-                              );
+    explicit TranslatorException(int    error_line_number,
+                        string message           = "Translator Exception");
 };
 
-class Empty : public ParserException
+
+class FieldOutRange : public TranslatorException
 {
+protected:
+    int bad_value;
 public:
-    explicit Empty(int         num,
-                   std::string message = "Empty!"
-                   );
+    FieldOutRange(int    error_line_number,
+                  int    bad_value,
+                  string message           = "Out range in punched card");
 };
 
-class IndexOutRange : public ParserException
+
+class AddressOutRange : public FieldOutRange
 {
+protected:
+    const int low  = 0;
+    const int high = 511;
 public:
-    IndexOutRange(int         num,
-                  int         bad_index,
-                  std::string message    = "Out range!"
-                  );
+    AddressOutRange(int    error_line_number,
+                    int    bad_value,
+                    string message           = "Address out range in punched card");
 };
 
-class Bad_token : public ParserException
+
+class CommandOutRange : public FieldOutRange
 {
+protected:
+    const int low  = 0;
+    const int high = 31;
 public:
-    explicit Bad_token(int           num,
-                       std::string & token,
-                       std::string   message = "Bad token!"
-                       );
+    CommandOutRange(int   error_line_number,
+                   int    bad_value,
+                   string message           = "Command out range in punched card");
 };
 
-class ProcessorException : public Exception
+
+class InvalidFieldToken : public TranslatorException
 {
+protected:
+    string field_name;
 public:
-    ProcessorException (int         num,
-                        int         err_com,
-                        int         op1,
-                        int         op2,
-                        int         op3,
-                        std::string message = "Runtime error!"
-                        );
+    InvalidFieldToken(int    error_line_number,
+                      string field_name,
+                      string message           = "Invalid token in punched card");
 };
 
-class Bad_command : public ProcessorException
+
+class EmptyFieldToken : public InvalidFieldToken
 {
 public:
-    Bad_command (int         num,
-                 int         err_com,
-                 int         op1,
-                 int         op2,
-                 int         op3,
-                 std::string message = "Bad command!"
-                 );
+    EmptyFieldToken(int    error_line_number,
+                    string field_name,
+                    string message           = "Empty field");
 };
 
-class MathException : public ProcessorException
+
+class InvalidAddressToken : public InvalidFieldToken
+{
+protected:
+    string invalid_token;
+public:
+    InvalidAddressToken(int    error_line_number,
+                        string invalid_token,
+                        string message           = "Syntax error of address");
+};
+
+
+class InvalidCommandToken : public InvalidFieldToken
+{
+protected:
+    string invalid_token;
+public:
+    InvalidCommandToken(int    error_line_number,
+                        string invalid_token,
+                        string message           = "Syntax error of command");
+};
+
+
+class InputParserException : public Exception
 {
 public:
-    MathException (int         num,
-                   int         err_com,
-                   int         op1,
-                   int         op2,
-                   int         op3,
-                   std::string message = "Math error!"
-                   );
-
-    MathException (int         num,
-                   int         err_com,
-                   int         op1,
-                   int         op2,
-                   int         op3,
-                   int         iop2,
-                   int         iop3,
-                   std::string message = "Math error!"
-                   );
-
-    MathException (int         num,
-                   int         err_com,
-                   int         op1,
-                   int         op2,
-                   int         op3,
-                   float       fop2,
-                   float       fop3,
-                   std::string message = "Math error!"
-                   );
+    explicit InputParserException(string message = "Error in input");
 };
 
-class NULL_DIVIDE : public MathException
+
+class InputEmptyToken : public InputParserException
 {
 public:
-    NULL_DIVIDE (int         num,
-                 int         err_com,
-                 int         op1,
-                 int         op2,
-                 int         op3,
-                 std::string message = "Dividing by zero is bad!"
-                 );
+    explicit InputEmptyToken(string message = "Empty token in input");
 };
+
+
+class InputInvalidToken : public InputParserException
+{
+protected:
+    string invalid_token;
+    string token_type_name;
+public:
+    explicit InputInvalidToken(string invalid_token,
+                               string token_type_name = "",
+                               string message         = "Invalid token in input");
+};
+
+
+class InvalidIntToken : public InputInvalidToken
+{
+public:
+    explicit InvalidIntToken(string invalid_token,
+                             string message         = "Invalid int token in input");
+};
+
+
+class InvalidFloatToken : public InputInvalidToken
+{
+public:
+    explicit InvalidFloatToken(string invalid_token,
+                               string message        = "Invalid float token in input");
+};
+
+
+class RunTimeException : public Exception
+{
+protected:
+    int    error_cell_number;
+    string command;
+public:
+    explicit RunTimeException(int    error_cell_number,
+                              string command,
+                              string message            = "RunTime Error");
+};
+
+
+class UndefinedCommand : public RunTimeException
+{
+protected:
+    int command_code;
+public:
+    UndefinedCommand(int    error_cell_number,
+                     int    command_code,
+                     string command,
+                     string message          = "Current command is undefined");
+};
+
+
+class MathException : public RunTimeException
+{
+public:
+    explicit MathException(int    error_cell_number,
+                           string command,
+                           string message            = "Error in math calculations");
+};
+
+
+class NullDivide : public MathException
+{
+public:
+    explicit NullDivide(int    error_cell_number,
+                        string command,
+                        string message            = "Null dividing error");
+};
+
 
 class MathOutRange : public MathException
 {
 public:
-    // простой ответ
-    MathOutRange (int         num,
-                  int         err_com,
-                  int         op1,
-                  int         op2,
-                  int         op3,
-                  std::string message = "Math out range!"
-                  );
-
-    // ответ для операций с целыми
-    MathOutRange (int         num,
-                  int         err_com,
-                  int         op1,
-                  int         op2,
-                  int         op3,
-                  int         iop2,
-                  int         iop3,
-                  std::string message = "Math out range!"
-                  );
-
-    // ответ для операций с вещественными
-    MathOutRange (int         num,
-                  int         err_com,
-                  int         op1,
-                  int         op2,
-                  int         op3,
-                  float       fop2,
-                  float       fop3,
-                  std::string message = "Math out range!"
-                  );
+    explicit MathOutRange(int    error_cell_number,
+                          string command,
+                          string message            = "Out Range in math calculations");
 };
 
-class FTOIOutRange : public MathOutRange
+
+class FloatToIntOutRange : public MathOutRange
 {
+protected:
+    float value;
 public:
-    FTOIOutRange (int         num,
-                  int         err_com,
-                  int         op1,
-                  int         op2,
-                  int         op3,
-                  long double res,
-                  std::string message = "Float to int out range!"
-                  );
+    explicit FloatToIntOutRange(int    error_cell_number,
+                                string command,
+                                float  value,
+                                string message            = "Error in conversion FLOAT TO INT");
 };
 
-/*
 
-class MemoryException : public Exception
+class IntOutRange : public MathOutRange
 {
+protected:
+    int       value1;
+    int       value2;
+    long long result;
 public:
-    MemoryException (int num, int address, std::string message = "Memory exception!");
+    explicit IntOutRange(int       error_cell_number,
+                         string    command,
+                         int       value1,
+                         int       value2,
+                         long long result,
+                         string    message           = "Int Out Range");
 };
 
-class MemoryUndefined : public MemoryException
+
+class FloatOutRange : public MathOutRange
 {
+protected:
+    float  value1;
+    float  value2;
+    double result;
 public:
-    int address;
-    MemoryUndefined (int num, int address, std::string message = "Accessing Undefined Memory!");
+    explicit FloatOutRange(int    error_cell_number,
+                           string command,
+                           float  value1,
+                           float  value2,
+                           double result,
+                           string message           = "Float Out Range");
 };
-
-*/
