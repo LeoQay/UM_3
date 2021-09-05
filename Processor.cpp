@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include "Processor.h"
 #include "Tools.h"
@@ -21,6 +22,8 @@ void Processor::omega_res(float res)
 
 Processor::Processor()
 {
+    Load_config();
+
     Register1 = Tools::getRandomInt();
     Register2 = Tools::getRandomInt();
     Summator  = Tools::getRandomInt();
@@ -51,34 +54,45 @@ Processor::Processor()
     maxInt = 2147483647ll;
     minInt = -2147483648ll;
 
-    cout << "INITIAL MACHINE STATE" << "\n"
-         << getMachineState() << "\n";
+    print_log("INITIAL MACHINE STATE\n" + getMachineState() + "\n");
 }
 
-Processor::~Processor()
-{
 
-}
+Processor::~Processor() = default;
+
 
 void Processor::set_max_iterations(int num)
 {
     max_iterations = num;
 }
 
+
 void Processor::set_BreakPoint(int NewBreakPoint)
 {
     BreakPoint = NewBreakPoint;
 }
 
+
 void Processor::Load_PunchedCard()
 {
-    Translator::Translate(config.get_punched_card_file_name(), memory);
+    switch (config.get_format_punched_card()) {
+        case FileFormat::TXT:
+            load_punched_card_txt();
+            break;
+        case FileFormat::BIN:
+            load_punched_card_bin();
+            break;
+        default:
+            throw Exception("Punched card name unknown");
+    }
 }
+
 
 void Processor::outMemory()
 {
     memory.outNiceMemory(config.get_memory_file_name());
 }
+
 
 void Processor::inInt()
 {
@@ -235,6 +249,7 @@ void Processor::inFloat()
     }
 }
 
+
 void Processor::outFloat()
 {
     int counter = op2;
@@ -248,6 +263,7 @@ void Processor::outFloat()
     }
 }
 
+
 void Processor::addFloat()
 {
     LoadFloatRegisters();
@@ -259,6 +275,7 @@ void Processor::addFloat()
 
     memory.push(op1, FSummator);
 }
+
 
 void Processor::subFloat()
 {
@@ -272,6 +289,7 @@ void Processor::subFloat()
     memory.push(op1, FSummator);
 }
 
+
 void Processor::mulFloat()
 {
     LoadFloatRegisters();
@@ -283,6 +301,7 @@ void Processor::mulFloat()
 
     memory.push(op1, FSummator);
 }
+
 
 void Processor::divFloat()
 {
@@ -299,11 +318,13 @@ void Processor::divFloat()
     memory.push(op1, FSummator);
 }
 
+
 void Processor::intToFloat ()
 {
     float value = (float)memory.getInt(op3);
     memory.push(op1, value);
 }
+
 
 void Processor::floatToInt ()
 {
@@ -318,10 +339,12 @@ void Processor::floatToInt ()
     memory.push(op1, (int) F);
 }
 
+
 void Processor::unconditional ()
 {
     RA = op2;
 }
+
 
 void Processor::PR()
 {
@@ -331,6 +354,7 @@ void Processor::PR()
     }
 }
 
+
 void Processor::PNR ()
 {
     if (omega != 0)
@@ -338,6 +362,7 @@ void Processor::PNR ()
         RA = op2;
     }
 }
+
 
 void Processor::PB ()
 {
@@ -347,6 +372,7 @@ void Processor::PB ()
     }
 }
 
+
 void Processor::PM ()
 {
     if (omega == 1)
@@ -354,6 +380,7 @@ void Processor::PM ()
         RA = op2;
     }
 }
+
 
 void Processor::PBR ()
 {
@@ -363,6 +390,7 @@ void Processor::PBR ()
     }
 }
 
+
 void Processor::PMR ()
 {
     if (omega != 2)
@@ -370,6 +398,7 @@ void Processor::PMR ()
         RA = op2;
     }
 }
+
 
 void Processor::conditional ()
 {
@@ -386,10 +415,12 @@ void Processor::conditional ()
     }
 }
 
+
 void Processor::mov()
 {
     memory.push(op1, memory.getInt(op3));
 }
+
 
 bool Processor::tact()
 {
@@ -399,7 +430,7 @@ bool Processor::tact()
     RK = memory.getStr(CurrentCommandAddress);
     Tools::ReadCell(RK, RKcommand, op1, op2, op3);
 
-    cout << "\n" << Log::getNiceCommand(CurrentCommandAddress, RK) << "\n\n";
+    print_log("\n" + Log::getNiceCommand(CurrentCommandAddress, RK) + "\n");
 
     switch (RKcommand)
     {
@@ -481,11 +512,11 @@ bool Processor::tact()
             throw UndefinedCommand(CurrentCommandAddress, (int)RKcommand, RK);
     }
 
-    cout << "\n" << "MACHINE STATE AFTER " << iterations << " TACTS" << "\n"
-         << getMachineState() << "\n";
+    print_log("\nMACHINE STATE AFTER " + Tools::IntToStr(iterations, 10, 0) + " TACTS\n" + getMachineState());
 
     return true;
 }
+
 
 void Processor::main_process()
 {
@@ -502,7 +533,7 @@ void Processor::LoadIntRegisters()
     FRegister1 = Tools::IntToFloat(Register1);
     FRegister2 = Tools::IntToFloat(Register2);
 
-    cout << Log::BinaryOperator(RK, op2, op3, Register1, Register2) << "\n";
+    print_log(Log::BinaryOperator(RK, op2, op3, Register1, Register2));
 }
 
 void Processor::LoadFloatRegisters()
@@ -513,7 +544,7 @@ void Processor::LoadFloatRegisters()
     Register1 = Tools::FloatToInt(FRegister1);
     Register2 = Tools::FloatToInt(FRegister2);
 
-    cout << Log::BinaryOperator(RK, op2, op3, Register1, Register2) << "\n";
+    print_log(Log::BinaryOperator(RK, op2, op3, Register1, Register2));
 }
 
 void Processor::LoadSummator(int value)
@@ -521,7 +552,7 @@ void Processor::LoadSummator(int value)
     Summator  = value;
     FSummator = Tools::IntToFloat(value);
 
-    cout << Log::getValueStr(Log::getAddressToken(op1), Summator) << "\n";
+    print_log(Log::getValueStr(Log::getAddressToken(op1), Summator));
 }
 
 void Processor::LoadSummator(float value)
@@ -529,7 +560,7 @@ void Processor::LoadSummator(float value)
     FSummator = value;
     Summator  = Tools::FloatToInt(value);
 
-    cout << Log::getValueStr(Log::getAddressToken(op1), Summator) << "\n";
+    print_log(Log::getValueStr(Log::getAddressToken(op1), Summator));
 }
 
 void Processor::OutRangeChecker(long long res)
@@ -541,10 +572,12 @@ void Processor::OutRangeChecker(long long res)
     }
 }
 
+
 void Processor::BreakPointChecker()
 {
 
 }
+
 
 string Processor::getMachineState()
 {
@@ -555,4 +588,37 @@ string Processor::getMachineState()
              Log::getValueStr("Summator",  Summator)                  + "\n" +
              Log::getValueStr(      "RK", Tools::StrToInt(RK));
     return token;
+}
+
+
+void Processor::print_log(string message)
+{
+    if(config.get_log_file_name() == "") return;
+
+    ofstream log(config.get_log_file_name(), ios::app);
+
+    if(!log.is_open())
+        throw Exception("Log file with name \"" + config.get_log_file_name() + "\" not found");
+
+    log << message << "\n";
+
+    log.close();
+}
+
+
+void Processor::Load_config()
+{
+    config.loadConfigFile();
+}
+
+
+void Processor::load_punched_card_txt()
+{
+    Translator::Translate(config.get_punched_card_file_name(), memory);
+}
+
+
+void Processor::load_punched_card_bin()
+{
+    memory.load_punched_card_bin(config.get_punched_card_file_name());
 }

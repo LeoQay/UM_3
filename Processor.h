@@ -349,6 +349,14 @@ private:
  */
     bool tact();
 
+
+    void print_log(string message);
+
+
+    void load_punched_card_txt();
+
+    void load_punched_card_bin();
+
 public:
     Processor();
 
@@ -377,4 +385,7 @@ public:
     void set_BreakPoint (int NewBreakPoint);
 
     string getMachineState ();
+
+
+    void Load_config();
 };

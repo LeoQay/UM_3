@@ -92,6 +92,8 @@ public:
     void   set_punched_card_file_name(string file_name);
     string get_punched_card_file_name();
 
+    FileFormat get_format_punched_card();
+
 
     void   set_log_file_name(string file_name);
     string get_log_file_name();

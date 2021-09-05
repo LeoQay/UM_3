@@ -215,3 +215,9 @@ string Config::get_start_machine_state_file_name()
     return start_machine_state_file_name;
 }
 
+
+FileFormat Config::get_format_punched_card()
+{
+    return format_punched_card;
+}
+
