@@ -36,10 +36,10 @@ void Memory::init_memory(InitMemoryMode mode)
 {
     switch (mode)
     {
-        case InitMemoryMode::Random:
+        case InitMemoryMode::RANDOM:
             random_init_memory();
             break;
-        case InitMemoryMode::Zeros:
+        case InitMemoryMode::ZEROS:
             zeros_init_memory();
             break;
         default:
@@ -53,10 +53,12 @@ std::string Memory::getStr(int index)
     return Tools::IntToStr(memory_mas[index]);
 }
 
+
 int Memory::getInt(int index)
 {
     return memory_mas[index];
 }
+
 
 float Memory::getFloat(int index)
 {
@@ -69,15 +71,18 @@ void Memory::push(int index, std::string new_val)
     memory_mas[index] = Tools::StrToInt(move(new_val));
 }
 
+
 void Memory::push(int index, int value)
 {
     memory_mas[index] = value;
 }
 
+
 void Memory::push(int index, float value)
 {
     memory_mas[index] = Tools::FloatToInt(value);
 }
+
 
 void Memory::outNiceMemory(string memory_file_name)
 {

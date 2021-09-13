@@ -27,11 +27,11 @@ Config::Config()
     };
 
     mapInitMemoryToken = {
-            {"random", InitMemoryMode::Random },
-            {"zeros",  InitMemoryMode::Zeros  }
+            {"random", InitMemoryMode::RANDOM },
+            {"zeros",  InitMemoryMode::ZEROS  }
     };
 
-    initMemoryMode                = InitMemoryMode::Random;
+    initMemoryMode                = InitMemoryMode::RANDOM;
 
     config_file_name              = "config.txt";
     format_config_file            = FileFormat::TXT;

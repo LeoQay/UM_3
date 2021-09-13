@@ -11,8 +11,8 @@ using namespace std;
  *  Zeros  - all cells in memory equal zero
  */
 enum InitMemoryMode {
-    Random,
-    Zeros
+    RANDOM,
+    ZEROS
 };
 
 enum FileFormat {

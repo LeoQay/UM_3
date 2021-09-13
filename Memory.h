@@ -25,7 +25,7 @@ private:
 public:
     Memory();
 
-    void init_memory(InitMemoryMode mode = Random);
+    void init_memory(InitMemoryMode mode = RANDOM);
 
 /*
  *  Each cell can be perceived as integer or as float,
