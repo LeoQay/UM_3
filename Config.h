@@ -16,9 +16,9 @@ enum InitMemoryMode {
 };
 
 enum FileFormat {
-    TXT = 0,
-    BIN = 1,
-    NONE = 2
+    TXT = 1,
+    BIN = 2,
+    NONE = 0
 };
 
 enum ConfigFieldToken {
@@ -39,28 +39,21 @@ private:
 
     map <string, InitMemoryMode> mapInitMemoryToken;
 
-
-    FileFormat format_config_file;
     string config_file_name;
 
 
-    FileFormat format_custom_memory;
     string custom_memory_file_name;
 
 
-    FileFormat format_memory;
     string memory_file_name;
 
 
-    FileFormat format_punched_card;
     string punched_card_file_name;
 
 
-    FileFormat format_log;
     string log_file_name;
 
 
-    FileFormat format_start_machine_state;
     string start_machine_state_file_name;
 
 
@@ -91,6 +84,7 @@ public:
 
     void   set_punched_card_file_name(string file_name);
     string get_punched_card_file_name();
+
 
     FileFormat get_format_punched_card();
 

@@ -30,7 +30,7 @@ int Translator::command_check (std::string command, int num)
 }
 
 
-void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
+int Translator::Translate (string PunchedCard_file_name, Memory & mem_obj)
 {
     // функция парсит перфокарту и бросает исключения, если допущены ошибки
 
@@ -39,6 +39,8 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
     fin.open(PunchedCard_file_name);
 
     int cellNumber = 0;
+
+    int previous_index = 0;
 
     while (!fin.eof())
     {
@@ -77,6 +79,12 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         {
             fin.close();
             throw AddressOutRange(cellNumber, position, "Cell number out range!");
+        }
+
+        if (position != previous_index + 1)
+        {
+            fin.close();
+            throw InvalidAddressToken(cellNumber, token, "Current address = previous address + 1");
         }
 
         //   команда
@@ -128,7 +136,11 @@ void Translator::Translate (string PunchedCard_file_name, Memory& mem_obj)
         }
 
         mem_obj.push(position, result);
+
+        previous_index = position;
     }
 
     fin.close();
+
+    return previous_index;
 }

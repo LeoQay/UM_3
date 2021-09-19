@@ -27,29 +27,26 @@ Config::Config()
     };
 
     mapInitMemoryToken = {
+            {"RANDOM", InitMemoryMode::RANDOM },
             {"random", InitMemoryMode::RANDOM },
+
+            {"ZEROS",  InitMemoryMode::ZEROS  },
             {"zeros",  InitMemoryMode::ZEROS  }
     };
 
     initMemoryMode                = InitMemoryMode::RANDOM;
 
-    config_file_name              = "config.txt";
-    format_config_file            = FileFormat::TXT;
+    config_file_name              = "";
 
     punched_card_file_name        = "punched_card.txt";
-    format_punched_card           = FileFormat::TXT;
 
-    memory_file_name              = "memory.txt";
-    format_memory                 = FileFormat::TXT;
+    memory_file_name              = "";
 
     custom_memory_file_name       = "";
-    format_custom_memory          = FileFormat::NONE;
 
     start_machine_state_file_name = "";
-    format_start_machine_state    = FileFormat::NONE;
 
     log_file_name                 = "";
-    format_log                    = FileFormat::NONE;
 }
 
 void Config::loadConfigFile()
@@ -136,8 +133,7 @@ FileFormat Config::getFileFormat(string file_name)
 
 void Config::set_config_file_name(string file_name)
 {
-    config_file_name   = file_name;
-    format_config_file = getFileFormat(file_name);
+    config_file_name = file_name;
 }
 
 string Config::get_config_file_name()
@@ -149,7 +145,6 @@ string Config::get_config_file_name()
 void Config::set_custom_memory_file_name(string file_name)
 {
     custom_memory_file_name = file_name;
-    format_custom_memory    = getFileFormat(file_name);
 }
 
 string Config::get_custom_memory_file_name()
@@ -172,7 +167,6 @@ InitMemoryMode Config::get_init_memory_mode()
 void Config::set_memory_file_name(string file_name)
 {
     memory_file_name = file_name;
-    format_memory    = getFileFormat(file_name);
 }
 
 string Config::get_memory_file_name()
@@ -184,7 +178,6 @@ string Config::get_memory_file_name()
 void Config::set_punched_card_file_name(string file_name)
 {
     punched_card_file_name = file_name;
-    format_punched_card    = getFileFormat(file_name);
 }
 
 string Config::get_punched_card_file_name()
@@ -195,7 +188,9 @@ string Config::get_punched_card_file_name()
 void Config::set_log_file_name(string file_name)
 {
     log_file_name = file_name;
-    format_log    = getFileFormat(file_name);
+    ofstream fin(log_file_name);
+    fin.clear();
+    fin.close();
 }
 
 string Config::get_log_file_name()
@@ -207,7 +202,6 @@ string Config::get_log_file_name()
 void Config::set_start_machine_state_file_name(string file_name)
 {
     start_machine_state_file_name = file_name;
-    format_start_machine_state    = getFileFormat(file_name);
 }
 
 string Config::get_start_machine_state_file_name()
@@ -218,6 +212,6 @@ string Config::get_start_machine_state_file_name()
 
 FileFormat Config::get_format_punched_card()
 {
-    return format_punched_card;
+    return getFileFormat(punched_card_file_name);
 }
 

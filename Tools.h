@@ -62,6 +62,7 @@ public:
  *  between numeric interpretations and string form
  */
 
+    static void  reverse_4b (char* ptr);
     static float IntToFloat (int   value);
     static int   FloatToInt (float value);
 

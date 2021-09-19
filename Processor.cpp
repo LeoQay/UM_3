@@ -20,9 +20,11 @@ void Processor::omega_res(float res)
     omega = res == 0 ? 0 : res < 0 ? 1 : 2;
 }
 
-Processor::Processor()
+Processor::Processor(Config *config)
 {
-    Load_config();
+    this->config = config;
+
+    memory.init_memory(config->get_init_memory_mode());
 
     Register1 = Tools::getRandomInt();
     Register2 = Tools::getRandomInt();
@@ -75,7 +77,7 @@ void Processor::set_BreakPoint(int NewBreakPoint)
 
 void Processor::Load_PunchedCard()
 {
-    switch (config.get_format_punched_card()) {
+    switch (config->get_format_punched_card()) {
         case FileFormat::TXT:
             load_punched_card_txt();
             break;
@@ -90,7 +92,7 @@ void Processor::Load_PunchedCard()
 
 void Processor::outMemory()
 {
-    memory.outNiceMemory(config.get_memory_file_name());
+    memory.outNiceMemory(config->get_memory_file_name());
 }
 
 
@@ -593,12 +595,12 @@ string Processor::getMachineState()
 
 void Processor::print_log(string message)
 {
-    if(config.get_log_file_name() == "") return;
+    if(config->get_log_file_name() == "") return;
 
-    ofstream log(config.get_log_file_name(), ios::app);
+    ofstream log(config->get_log_file_name(), ios::app);
 
     if(!log.is_open())
-        throw Exception("Log file with name \"" + config.get_log_file_name() + "\" not found");
+        throw Exception("Log file with name \"" + config->get_log_file_name() + "\" not found");
 
     log << message << "\n";
 
@@ -606,19 +608,20 @@ void Processor::print_log(string message)
 }
 
 
-void Processor::Load_config()
+void Processor::set_config_file_name(string file_name)
 {
-    config.loadConfigFile();
+    config->set_config_file_name(file_name);
+    config->loadConfigFile();
 }
 
 
 void Processor::load_punched_card_txt()
 {
-    Translator::Translate(config.get_punched_card_file_name(), memory);
+    Translator::Translate(config->get_punched_card_file_name(), memory);
 }
 
 
 void Processor::load_punched_card_bin()
 {
-    memory.load_punched_card_bin(config.get_punched_card_file_name());
+    memory.load_punched_card_bin(config->get_punched_card_file_name());
 }

@@ -61,12 +61,16 @@ bool Tools::number(std::string s)  // проверка на числовую л�
 
 float Tools::IntToFloat(int value)
 {
-    return *(float*)&value;
+    int buffer = value;
+    //reverse_4b((char*)&buffer);
+    return *(float*)&buffer;
 }
 
 int Tools::FloatToInt(float value)
 {
-    return *(int*)&value;
+    float buffer = value;
+    //reverse_4b((char*)&buffer);
+    return *(int*)&buffer;
 }
 
 int Tools::StrToInt (std::string stroka, int origin_system)
@@ -213,4 +217,11 @@ std::string Tools::getToken (std::string & token)
     token.erase(0, iter);
 
     return answer;
+}
+
+
+void Tools::reverse_4b(char *ptr)
+{
+    swap(*ptr, *(ptr + 3));
+    swap(*(ptr + 1), *(ptr + 2));
 }

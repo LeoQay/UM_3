@@ -16,7 +16,7 @@ private:
  */
     Memory memory;
 
-    Config config;
+    Config * config;
 
 /*
  *  It's ALU (arithmetic logic unit) registers
@@ -358,7 +358,7 @@ private:
     void load_punched_card_bin();
 
 public:
-    Processor();
+    explicit Processor(Config * config);
 
     ~Processor();
 
@@ -387,5 +387,5 @@ public:
     string getMachineState ();
 
 
-    void Load_config();
+    void set_config_file_name(string file_name);
 };

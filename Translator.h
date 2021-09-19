@@ -17,7 +17,7 @@ public:
  *  Take text of program code from txt file and translate it to binary view
  *  Then put it into memory
  */
-    static void Translate (std::string   PunchedCard_file_name,
+    static int Translate (std::string   PunchedCard_file_name,
                            Memory      & mem_obj
                            );
 

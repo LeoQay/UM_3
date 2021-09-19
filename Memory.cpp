@@ -90,8 +90,8 @@ void Memory::outNiceMemory(string memory_file_name)
 
     for (int i = 0; i < 512; i++)
     {
-        answer << Tools::getRightBorderStr(Tools::IntToStr(i, 10, 0), 3, '0')
-               << " "
+        answer /*<< Tools::getRightBorderStr(Tools::IntToStr(i, 10, 0), 3, '0')
+               << " "*/
                << getStr(i)
                << "\n";
     }
