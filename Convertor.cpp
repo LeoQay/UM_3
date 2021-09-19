@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <iostream>
 
 #include "Convertor.h"
 #include "Exception.h"
@@ -92,7 +91,7 @@ void Convertor::storage_to_bin(BinaryStorage & storage, string BinFile)
     for (int i = 0; i < storage.size; i++)
     {
         int current = storage.get(i);
-        cout << current << "\n";
+
         fin.write((char*)&current, sizeof(int));
     }
 
