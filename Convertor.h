@@ -5,6 +5,7 @@
 #include <string>
 
 #include "BinaryStorage.h"
+#include "Memory.h"
 
 using namespace std;
 
@@ -26,6 +27,10 @@ public:
 
     static string bin_to_txt(string file_name);
 
+    static void punched_card_bin_to_memory(string punched_card, Memory & memory);
+
+    static void punched_card_source_to_bin(string SourceFile, string BinFile);
+
 private:
 
     static void bin_to_storage(string BinFile, BinaryStorage & storage);
@@ -37,6 +42,8 @@ private:
     static void storage_to_txt(BinaryStorage & storage, string TxtFile);
 
     static void source_text_to_storage(string SourceFile, BinaryStorage & storage);
+
+    static void storage_to_memory(BinaryStorage & storage, Memory & memory, int first);
 };
 
 

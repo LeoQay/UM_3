@@ -5,6 +5,7 @@
 #include "Memory.h"
 #include "Tools.h"
 #include "Exception.h"
+#include "Config.h"
 
 using namespace std;
 
@@ -97,28 +98,4 @@ void Memory::outNiceMemory(string memory_file_name)
     }
 
     answer.close();
-}
-
-
-void Memory::load_punched_card_bin(string punched_card_file_name)
-{
-    fstream punched_card(punched_card_file_name, ios::binary|ios::out);
-
-    if(!punched_card.is_open())
-        throw Exception("Punched card file not found");
-
-    int buffer;
-    int current_value = memory_mas[0];
-    int index = 0;
-
-    while(punched_card >> buffer)
-    {
-        memory_mas[index] = current_value;
-
-        index = (index + 1) % 512;
-
-        current_value = buffer;
-    }
-
-    punched_card.close();
 }

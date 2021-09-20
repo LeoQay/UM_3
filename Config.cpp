@@ -74,7 +74,7 @@ void Config::loadConfigFile()
             if (mapConfigFieldToken.find(field_token) == mapConfigFieldToken.end())
             {
                 config.close();
-                throw Exception("Error in config -- " + field_token);
+                throw Exception(" Wrong configuration name -- " + field_token);
             }
 
 

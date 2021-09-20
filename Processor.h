@@ -353,7 +353,7 @@ private:
     void print_log(string message);
 
 
-    void load_punched_card_txt();
+    void load_punched_card_source();
 
     void load_punched_card_bin();
 

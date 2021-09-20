@@ -60,15 +60,10 @@ AddressOutRange::AddressOutRange(int    error_line_number,
                              FieldOutRange(error_line_number, bad_value, message)
 {
     ostringstream buf;
-    buf << low;
-    string number_token_low = buf.str();
-    buf.clear();
-    buf << high;
-    string number_token_high = buf.str();
 
-    output_message += "\n";
-    output_message += "Distance is ";
-    output_message += "[" + number_token_low + ", " + number_token_high + "]";
+    buf << "\nDistance is " << "[" << low << ", " << high << "]";
+
+    output_message += buf.str();
 }
 
 
@@ -79,15 +74,10 @@ CommandOutRange::CommandOutRange(int    error_line_number,
                                  FieldOutRange(error_line_number, bad_value, message)
 {
     ostringstream buf;
-    buf << low;
-    string number_token_low = buf.str();
-    buf.clear();
-    buf << high;
-    string number_token_high = buf.str();
 
-    output_message += "\n";
-    output_message += "Distance is ";
-    output_message += "[" + number_token_low + ", " + number_token_high + "]";
+    buf << "\nDistance is " << "[" << low << ", " << high << "]";
+
+    output_message += buf.str();
 }
 
 
@@ -208,12 +198,10 @@ UndefinedCommand::UndefinedCommand(int    error_cell_number,
                                    command_code(command_code)
 {
     ostringstream buf;
-    buf << command_code;
-    string number_token = buf.str();
+    buf  << "\nCode of undefined command -- "
+    << command_code;
 
-    output_message += "\n";
-    output_message += "Code of undefined command -- ";
-    output_message += number_token;
+    output_message += buf.str();
 }
 
 
@@ -270,20 +258,13 @@ IntOutRange::IntOutRange(int       error_cell_number,
                          value2(value2),
                          result(result)
 {
-    ostringstream buf1, buf2, buf_res;
-    buf1    << value1;
-    buf2    << value2;
-    buf_res << result;
+    ostringstream buf;
 
-    output_message += "\n";
-    output_message += "Value1 = ";
-    output_message += buf1.str();
-    output_message += "\n";
-    output_message += "Value2 = ";
-    output_message += buf2.str();
-    output_message += "\n";
-    output_message += "Result = ";
-    output_message += buf_res.str();
+    buf << "\nValue1 = " << value1
+    << "\nValue2 = " << value2
+    << "\nResult = " << result;
+
+    output_message += buf.str();
 }
 
 
@@ -299,18 +280,11 @@ FloatOutRange::FloatOutRange(int   error_cell_number,
                             value2(value2),
                             result(result)
 {
-    ostringstream buf1, buf2, buf_res;
-    buf1    << value1;
-    buf2    << value2;
-    buf_res << result;
+    ostringstream buf;
 
-    output_message += "\n";
-    output_message += "Value1 = ";
-    output_message += buf1.str();
-    output_message += "\n";
-    output_message += "Value2 = ";
-    output_message += buf2.str();
-    output_message += "\n";
-    output_message += "Result = ";
-    output_message += buf_res.str();
+    buf << "\nValue1 = " << value1
+    << "\nValue2 = " << value2
+    << "\nResult = " << result;
+
+    output_message += buf.str();
 }

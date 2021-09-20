@@ -160,8 +160,39 @@ void Convertor::source_text_to_storage(string SourceFile, BinaryStorage & storag
 
     int size = Translator::Translate(SourceFile, *memory);
 
-    storage.push(0);
     for (int i = 1; i <= size; i++) storage.push(memory->getInt(i));
 
     delete memory;
+}
+
+
+void Convertor::storage_to_memory(BinaryStorage & storage, Memory & memory, int first)
+{
+    for (int i = 0; i < storage.size; i++)
+    {
+        memory.push(i + first, storage.get(i));
+    }
+}
+
+
+void Convertor::punched_card_bin_to_memory(string punched_card, Memory & memory)
+{
+    BinaryStorage * storage = new BinaryStorage;
+
+    bin_to_storage(punched_card, *storage);
+
+    storage_to_memory(*storage, memory, 1);
+
+    delete storage;
+}
+
+void Convertor::punched_card_source_to_bin(string SourceFile, string BinFile)
+{
+    BinaryStorage * storage = new BinaryStorage;
+
+    source_text_to_storage(SourceFile, *storage);
+
+    storage_to_bin(*storage, BinFile);
+
+    delete storage;
 }

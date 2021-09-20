@@ -60,8 +60,6 @@ private:
     InitMemoryMode initMemoryMode;
 
 
-    FileFormat getFileFormat(string file_name);
-
 public:
     Config();
 
@@ -87,6 +85,8 @@ public:
 
 
     FileFormat get_format_punched_card();
+
+    FileFormat getFileFormat(string file_name);
 
 
     void   set_log_file_name(string file_name);

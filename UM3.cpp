@@ -77,34 +77,25 @@ void command_line_reading(int argc, char* argv[], Config * config)
 
 int main(int argc, char* argv[])
 {
-    Config * config = new Config;
+    try {
+        Config * config = new Config;
 
-    command_line_reading(argc, argv, config);
+        command_line_reading(argc, argv, config);
 
-    Processor processor(config);
 
-    try
-    {
+        Processor processor(config);
+
         processor.Load_PunchedCard();
-    }
 
-    catch (Exception & err)
-    {
-        cerr << "\n" << err.what() << "\n";
-        return 1;
-    }
-
-    try{
         processor.main_process();
-    }
 
+        processor.outMemory();
+    }
     catch (Exception & err)
     {
         cerr << "\n" << err.what() << "\n";
         return 1;
     }
-
-    processor.outMemory();
 
     return 0;
 }

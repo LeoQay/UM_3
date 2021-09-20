@@ -57,7 +57,4 @@ public:
  *
  */
     void outNiceMemory(std::string memory_file_name);
-
-
-    void load_punched_card_bin(string punched_card_file_name);
 };

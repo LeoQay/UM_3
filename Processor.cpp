@@ -4,11 +4,12 @@
 
 #include "Processor.h"
 #include "Tools.h"
-#include "Translator.h"
 #include "Parser.h"
 #include "Exception.h"
 #include "Log.h"
 #include "Config.h"
+#include "Convertor.h"
+#include "Translator.h"
 
 void Processor::omega_res(int res)
 {
@@ -72,21 +73,6 @@ void Processor::set_max_iterations(int num)
 void Processor::set_BreakPoint(int NewBreakPoint)
 {
     BreakPoint = NewBreakPoint;
-}
-
-
-void Processor::Load_PunchedCard()
-{
-    switch (config->get_format_punched_card()) {
-        case FileFormat::TXT:
-            load_punched_card_txt();
-            break;
-        case FileFormat::BIN:
-            load_punched_card_bin();
-            break;
-        default:
-            throw Exception("Punched card name unknown");
-    }
 }
 
 
@@ -615,7 +601,23 @@ void Processor::set_config_file_name(string file_name)
 }
 
 
-void Processor::load_punched_card_txt()
+void Processor::Load_PunchedCard()
+{
+    switch (config->get_format_punched_card())
+    {
+        case FileFormat::TXT:
+            load_punched_card_source();
+            break;
+        case FileFormat::BIN:
+            load_punched_card_bin();
+            break;
+        default:
+            throw Exception("Punched card name unknown");
+    }
+}
+
+
+void Processor::load_punched_card_source()
 {
     Translator::Translate(config->get_punched_card_file_name(), memory);
 }
@@ -623,5 +625,5 @@ void Processor::load_punched_card_txt()
 
 void Processor::load_punched_card_bin()
 {
-    memory.load_punched_card_bin(config->get_punched_card_file_name());
+    Convertor::punched_card_bin_to_memory(config->get_punched_card_file_name(), memory);
 }
