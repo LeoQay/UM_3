@@ -7,17 +7,14 @@
 #include "Processor.h"
 #include "Exception.h"
 
-
-#include "Tools.h"
-
 using namespace std;
 
 static struct option long_options[] = {
-        {"config", 2, 0, 0},
-        {"custom_memory", 2, 0, 0},
-        {"start_machine_state", 2, 0, 0},
-        {"punched_card", 2, 0, 0},
-        {0, 0, 0, 0}
+        {"config",              2, nullptr, 0},
+        {"custom_memory",       2, nullptr, 0},
+        {"start_machine_state", 2, nullptr, 0},
+        {"punched_card",        2, nullptr, 0},
+        {nullptr,               0, nullptr, 0}
 };
 
 enum index_of_options {
@@ -29,6 +26,8 @@ enum index_of_options {
 
 void command_line_reading(int argc, char* argv[], Config * config)
 {
+    Config buffer_config;
+
     while(true)
     {
         int getopt_code;
@@ -49,15 +48,15 @@ void command_line_reading(int argc, char* argv[], Config * config)
                         cout << "CONFIG " << optarg << "\n";
                         break;
                     case index_of_options::CUSTOM_MEMORY:
-                        if(optarg) config->set_custom_memory_file_name(optarg);
+                        if(optarg) buffer_config.set_custom_memory_file_name(optarg);
                         cout << "CUSTOM " << optarg << "\n";
                         break;
                     case index_of_options::START_MACHINE_STATE:
-                        if(optarg) config->set_start_machine_state_file_name(optarg);
+                        if(optarg) buffer_config.set_start_machine_state_file_name(optarg);
                         cout << "START MACHINE STATE " << optarg << "\n";
                         break;
                     case index_of_options::PUNCHED_CARD:
-                        if(optarg) config->set_punched_card_file_name(optarg);
+                        if(optarg) buffer_config.set_punched_card_file_name(optarg);
                         cout << "PUNCHED CARD " << optarg << "\n";
                         break;
                     default:

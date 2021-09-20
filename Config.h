@@ -41,24 +41,17 @@ private:
 
     string config_file_name;
 
-
     string custom_memory_file_name;
-
 
     string memory_file_name;
 
-
     string punched_card_file_name;
-
 
     string log_file_name;
 
-
     string start_machine_state_file_name;
 
-
     InitMemoryMode initMemoryMode;
-
 
 public:
     Config();
