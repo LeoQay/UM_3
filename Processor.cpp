@@ -27,6 +27,8 @@ Processor::Processor(Config *config)
 
     memory.init_memory(config->get_init_memory_mode());
 
+    Load_PunchedCard();
+
     Register1 = Tools::getRandomInt();
     Register2 = Tools::getRandomInt();
     Summator  = Tools::getRandomInt();
@@ -506,7 +508,7 @@ bool Processor::tact()
 }
 
 
-void Processor::main_process()
+void Processor::launch_button()
 {
     do {
         BreakPointChecker();
@@ -612,7 +614,7 @@ void Processor::Load_PunchedCard()
             load_punched_card_bin();
             break;
         default:
-            throw Exception("Punched card name unknown");
+            throw Exception("File with punched card has invalid type");
     }
 }
 

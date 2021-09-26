@@ -190,6 +190,10 @@ void Convertor::punched_card_source_to_bin(string SourceFile, string BinFile)
 {
     BinaryStorage * storage = new BinaryStorage;
 
+    if(BinFile == "") {
+        BinFile = SourceFile.substr(0, SourceFile.find(".txt")) + ".bin";
+    }
+
     source_text_to_storage(SourceFile, *storage);
 
     storage_to_bin(*storage, BinFile);

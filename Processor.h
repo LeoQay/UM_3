@@ -378,7 +378,7 @@ public:
  *  Basically, this function is launch button
  *  it execute tact one by one before end command or error or breakpoint
  */
-    void main_process();
+    void launch_button();
 
 
     void set_max_iterations(int num);

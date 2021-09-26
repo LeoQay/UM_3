@@ -34,6 +34,8 @@ Config::Config()
             {"zeros",  InitMemoryMode::ZEROS  }
     };
 
+    executeMode                   = ExecMode::RUN;
+
     initMemoryMode                = InitMemoryMode::RANDOM;
 
     config_file_name              = "";
@@ -47,10 +49,14 @@ Config::Config()
     start_machine_state_file_name = "";
 
     log_file_name                 = "";
+
+    output_file_name = "";
 }
 
 void Config::loadConfigFile()
 {
+    if(config_file_name == "") return;
+
     ifstream config(config_file_name);
 
     if (!config.is_open())
@@ -119,7 +125,7 @@ void Config::loadConfigFile()
 
 FileFormat Config::getFileFormat(string file_name)
 {
-    int dot = file_name.find('.');
+    int dot = file_name.rfind('.');
 
     if (dot == -1) return FileFormat::NONE;
 
@@ -213,5 +219,34 @@ string Config::get_start_machine_state_file_name()
 FileFormat Config::get_format_punched_card()
 {
     return getFileFormat(punched_card_file_name);
+}
+
+
+void Config::set_init_memory_mode(string name_token)
+{
+    if (mapInitMemoryToken.find(name_token) == mapInitMemoryToken.end())
+        throw Exception("Error in config -- " + name_token);
+    set_init_memory_mode(mapInitMemoryToken.find(name_token)->second);
+}
+
+
+void Config::set_output_file_name(string file_name)
+{
+    output_file_name = file_name;
+}
+
+string Config::get_output_file_name()
+{
+    return output_file_name;
+}
+
+
+void Config::set_exec_mode(ExecMode mode) {
+    executeMode = mode;
+}
+
+ExecMode Config::get_exec_mode()
+{
+    return executeMode;
 }
 

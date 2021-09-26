@@ -30,6 +30,11 @@ enum ConfigFieldToken {
     INIT_MEMORY_MODE
 };
 
+enum ExecMode {
+    ONLY_BIN,
+    RUN
+};
+
 class Config
 {
 private:
@@ -38,6 +43,8 @@ private:
     map <string, FileFormat> mapFileFormatToken;
 
     map <string, InitMemoryMode> mapInitMemoryToken;
+
+    string output_file_name;
 
     string config_file_name;
 
@@ -53,10 +60,18 @@ private:
 
     InitMemoryMode initMemoryMode;
 
+    ExecMode executeMode;
+
 public:
     Config();
 
+    void set_exec_mode(ExecMode mode);
+    ExecMode get_exec_mode();
 
+    void   set_output_file_name(string file_name);
+    string get_output_file_name();
+
+    void           set_init_memory_mode(string mode_name);
     void           set_init_memory_mode(InitMemoryMode mode);
     InitMemoryMode get_init_memory_mode();
 
@@ -91,5 +106,4 @@ public:
 
 
     void loadConfigFile ();
-
 };
