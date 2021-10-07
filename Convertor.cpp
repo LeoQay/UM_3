@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <string>
 
 #include "Convertor.h"
 #include "Exception.h"

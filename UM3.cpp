@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <getopt.h>
 
 #include "Convertor.h"
@@ -14,9 +15,9 @@ static struct option long_options[] = {
         {"config", 2, nullptr, 0},
         {"custom_memory", 2, nullptr, 0},
         {"start_machine_state", 2, nullptr, 0},
-        {"exec", 2, nullptr, 0},
         {"init_memory", 2, nullptr, 0},
-        {"run", 1, nullptr, 0},
+        {"punched", 1, nullptr, 0},
+        {"help", 0, nullptr, 0},
         {nullptr, 0, nullptr, 0}
 };
 
@@ -24,8 +25,9 @@ enum index_of_options {
     CONFIG = 0,
     CUSTOM_MEMORY = 1,
     START_MACHINE_STATE = 2,
-    PUNCHED_CARD = 3,
-    INIT_MEMORY = 4
+    INIT_MEMORY = 3,
+    PUNCHED_CARD = 4,
+    HELP = 5
 };
 
 void command_line_reading(int argc, char* argv[], Config * config)
@@ -59,19 +61,20 @@ void command_line_reading(int argc, char* argv[], Config * config)
                         break;
                     case index_of_options::CONFIG:
                         config_file_name = optarg;
-                        cout << "CONFIG " << optarg << "\n";
                         break;
                     case index_of_options::CUSTOM_MEMORY:
                         if(optarg) config->set_custom_memory_file_name(optarg);
-                        cout << "CUSTOM " << optarg << "\n";
                         break;
                     case index_of_options::START_MACHINE_STATE:
                         if(optarg) config->set_start_machine_state_file_name(optarg);
-                        cout << "START MACHINE STATE " << optarg << "\n";
                         break;
                     case index_of_options::PUNCHED_CARD:
                         if(optarg) config->set_punched_card_file_name(optarg);
-                        cout << "PUNCHED CARD " << optarg << "\n";
+                        break;
+                    case index_of_options::HELP:
+                        cout << config->help();
+                        config->set_exec_mode(ExecMode::NOTHING);
+                        return;
                         break;
                     default:
                         // ERROR
@@ -91,8 +94,6 @@ void command_line_reading(int argc, char* argv[], Config * config)
 
 int main(int argc, char* argv[])
 {
-    Convertor::bin_to_txt("frog.bin");
-
     try {
         Config * config = new Config;
 

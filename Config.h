@@ -32,7 +32,8 @@ enum ConfigFieldToken {
 
 enum ExecMode {
     ONLY_BIN,
-    RUN
+    RUN,
+    NOTHING
 };
 
 class Config
@@ -61,6 +62,23 @@ private:
     InitMemoryMode initMemoryMode;
 
     ExecMode executeMode;
+
+    string help_msg = "It is simple emulator UM-3\n"
+                      "\n"
+                      "-o <file_name>                        - set output file name\n"
+                      "\n"
+                      "-c                                    - program returns only binary file\n"
+                      "\n"
+                      "--punched=<file_name> .txt or .bin    - set executable file\n"
+                      "\n"
+                      "--init_memory=<RANDOM or ZEROS>       - set initialization memory mode \n"
+                      "\n"
+                      "--config=<file_name.txt>              - set config file\n"
+                      "!!! options in config file more relevant than command line arguments\n"
+                      "\n"
+                      "--start_machine_state=<file_name.txt> - set start machine state file\n"
+                      "\n"
+                      "--help                                - shows program arguments list\n";
 
 public:
     Config();
@@ -106,4 +124,6 @@ public:
 
 
     void loadConfigFile ();
+
+    string help();
 };

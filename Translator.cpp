@@ -38,6 +38,10 @@ int Translator::Translate (string PunchedCard_file_name, Memory & mem_obj)
 
     fin.open(PunchedCard_file_name);
 
+    if (!fin.is_open()) {
+        throw Exception("Punched card file doesn't found");
+    }
+
     int cellNumber = 0;
 
     int previous_index = 0;

@@ -1,5 +1,6 @@
 #include <map>
 #include <fstream>
+#include <string>
 
 #include "Config.h"
 #include "Tools.h"
@@ -50,12 +51,12 @@ Config::Config()
 
     log_file_name                 = "";
 
-    output_file_name = "";
+    output_file_name              = "";
 }
 
 void Config::loadConfigFile()
 {
-    if(config_file_name == "") return;
+    if(config_file_name.empty()) return;
 
     ifstream config(config_file_name);
 
@@ -248,5 +249,9 @@ void Config::set_exec_mode(ExecMode mode) {
 ExecMode Config::get_exec_mode()
 {
     return executeMode;
+}
+
+string Config::help() {
+    return help_msg;
 }
 

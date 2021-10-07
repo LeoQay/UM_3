@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 #include "Processor.h"
 #include "Tools.h"
