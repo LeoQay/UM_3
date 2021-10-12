@@ -1,0 +1,7 @@
+1 ININT  101   2   0
+2 SUBINT   0 101 102
+3 IF       4   6   4
+4 OUTINT 101   1   0
+5 JUMP      0   7   0
+6 OUTINT 102   1   0
+7 END      0   0   0 
