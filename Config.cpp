@@ -35,13 +35,13 @@ Config::Config()
             {"zeros",  InitMemoryMode::ZEROS  }
     };
 
-    executeMode                   = ExecMode::RUN;
+    executeMode                   = ExecMode::NOTHING;
 
     initMemoryMode                = InitMemoryMode::RANDOM;
 
     config_file_name              = "";
 
-    punched_card_file_name        = "punched_card.txt";
+    punched_card_file_name        = "";
 
     memory_file_name              = "";
 
@@ -52,6 +52,8 @@ Config::Config()
     log_file_name                 = "";
 
     output_file_name              = "";
+
+    convert_file_name             = "";
 }
 
 void Config::loadConfigFile()
@@ -253,5 +255,15 @@ ExecMode Config::get_exec_mode()
 
 string Config::help() {
     return help_msg;
+}
+
+
+void Config::set_convert_file_name(string file_name) {
+    convert_file_name = file_name;
+}
+
+string Config::get_convert_file_name()
+{
+    return convert_file_name;
 }
 

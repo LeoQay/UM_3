@@ -23,9 +23,9 @@ public:
      *     11111000000000000000000000000000
      * END OF EXAMPLE
     */
-    static string txt_to_bin(string file_name);
+    static void txt_to_bin(string file_name, string OutFile);
 
-    static string bin_to_txt(string file_name);
+    static void bin_to_txt(string file_name, string OutFile);
 
     static void punched_card_bin_to_memory(string punched_card, Memory & memory);
 

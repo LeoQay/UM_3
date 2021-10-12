@@ -18,6 +18,9 @@ static struct option long_options[] = {
         {"init_memory", 2, nullptr, 0},
         {"punched", 1, nullptr, 0},
         {"help", 0, nullptr, 0},
+        {"run", 0, nullptr, 0},
+        {"txt-bin", 1, nullptr, 0},
+        {"bin-txt", 1, nullptr, 0},
         {nullptr, 0, nullptr, 0}
 };
 
@@ -27,7 +30,10 @@ enum index_of_options {
     START_MACHINE_STATE = 2,
     INIT_MEMORY = 3,
     PUNCHED_CARD = 4,
-    HELP = 5
+    HELP = 5,
+    START = 6,
+    CONV_TXT = 7,
+    CONV_BIN = 8
 };
 
 void command_line_reading(int argc, char* argv[], Config * config)
@@ -56,6 +62,17 @@ void command_line_reading(int argc, char* argv[], Config * config)
             case 2:
                 switch(option_index)
                 {
+                    case index_of_options::CONV_TXT:
+                        config->set_convert_file_name(optarg);
+                        config->set_exec_mode(ExecMode::CONVERTOR_TXT_BIN);
+                        break;
+                    case index_of_options::CONV_BIN:
+                        config->set_convert_file_name(optarg);
+                        config->set_exec_mode(ExecMode::CONVERTOR_BIN_TXT);
+                        break;
+                    case index_of_options::START:
+                        config->set_exec_mode(ExecMode::RUN);
+                        break;
                     case index_of_options::INIT_MEMORY:
                         if(optarg) config->set_init_memory_mode(optarg);
                         break;
@@ -99,9 +116,9 @@ int main(int argc, char* argv[])
 
         command_line_reading(argc, argv, config);
 
-        Processor processor(config);
-
         if(config->get_exec_mode() == ExecMode::RUN) {
+            Processor processor(config);
+
             processor.launch_button();
 
             if(config->get_memory_file_name() != "") {
@@ -111,9 +128,16 @@ int main(int argc, char* argv[])
             Convertor::punched_card_source_to_bin(
                     config->get_punched_card_file_name(),
                     config->get_output_file_name());
+        } else if (config->get_exec_mode() == ExecMode::CONVERTOR_BIN_TXT) {
+            Convertor::bin_to_txt(config->get_convert_file_name(),
+                                  config->get_output_file_name());
+        } else if (config->get_exec_mode() == ExecMode::CONVERTOR_TXT_BIN) {
+            Convertor::txt_to_bin(config->get_convert_file_name(),
+                                  config->get_output_file_name());
         }
-
     }
+
+
     catch (Exception & err)
     {
         cerr << "\n" << err.what() << "\n";

@@ -9,7 +9,7 @@
 #include "Translator.h"
 #include "Memory.h"
 
-string Convertor::txt_to_bin(string TxtFile)
+void Convertor::txt_to_bin(string TxtFile, string OutFile)
 {
     ifstream fin(TxtFile);
 
@@ -21,18 +21,18 @@ string Convertor::txt_to_bin(string TxtFile)
 
     fin.close();
 
-    string BinFile = TxtFile.substr(0, TxtFile.find(".txt")) + ".bin";
-
     BinaryStorage buffer;
 
-    txt_to_storage(TxtFile, buffer);
-    storage_to_bin(buffer, BinFile);
+    if (OutFile.empty()) {
+        OutFile = TxtFile + ".txt";
+    }
 
-    return BinFile;
+    txt_to_storage(TxtFile, buffer);
+    storage_to_bin(buffer, OutFile);
 }
 
 
-string Convertor::bin_to_txt(string BinFile)
+void Convertor::bin_to_txt(string BinFile, string OutFile)
 {
     fstream fin(BinFile, ios::binary|ios::in);
 
@@ -41,14 +41,14 @@ string Convertor::bin_to_txt(string BinFile)
         throw Exception("File " + BinFile + " doesn't exist");
     }
 
-    string TxtFile = BinFile.substr(0, BinFile.find(".bin")) + ".txt";
-
     BinaryStorage buffer;
 
-    bin_to_storage(BinFile, buffer);
-    storage_to_txt(buffer, TxtFile);
+    if (OutFile.empty()) {
+        OutFile = BinFile + ".bin";
+    }
 
-    return TxtFile;
+    bin_to_storage(BinFile, buffer);
+    storage_to_txt(buffer, OutFile);
 }
 
 

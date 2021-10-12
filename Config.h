@@ -33,6 +33,8 @@ enum ConfigFieldToken {
 enum ExecMode {
     ONLY_BIN,
     RUN,
+    CONVERTOR_TXT_BIN,
+    CONVERTOR_BIN_TXT,
     NOTHING
 };
 
@@ -44,6 +46,8 @@ private:
     map <string, FileFormat> mapFileFormatToken;
 
     map <string, InitMemoryMode> mapInitMemoryToken;
+
+    string convert_file_name;
 
     string output_file_name;
 
@@ -63,22 +67,25 @@ private:
 
     ExecMode executeMode;
 
-    string help_msg = "It is simple emulator UM-3\n"
+    string help_msg = "It is simple emulator of UM-3\n"
+                      "--txt-bin=<file name> - convert \"txt\" to binary\n"
                       "\n"
-                      "-o <file_name>                        - set output file name\n"
+                      "--bin-txt=<file name> - convert binary to \"txt\"\n"
                       "\n"
-                      "-c                                    - program returns only binary file\n"
+                      "-o <file_name> - set output file name\n"
                       "\n"
-                      "--punched=<file_name> .txt or .bin    - set executable file\n"
+                      "-c - program returns only binary file, required punched card\n"
                       "\n"
-                      "--init_memory=<RANDOM or ZEROS>       - set initialization memory mode \n"
+                      "--punched=<file_name> .txt or .bin - set executable file\n"
                       "\n"
-                      "--config=<file_name.txt>              - set config file\n"
-                      "!!! options in config file more relevant than command line arguments\n"
+                      "--init_memory=<RANDOM or ZEROS> - set initialization memory mode \n"
+                      "\n"
+                      "--config=<file_name.txt> - set config file\n"
+                      "!!! options in config file more relevant than command line arguments !!!\n"
                       "\n"
                       "--start_machine_state=<file_name.txt> - set start machine state file\n"
                       "\n"
-                      "--help                                - shows program arguments list\n";
+                      "--help - shows program arguments list\n";
 
 public:
     Config();
@@ -92,6 +99,10 @@ public:
     void           set_init_memory_mode(string mode_name);
     void           set_init_memory_mode(InitMemoryMode mode);
     InitMemoryMode get_init_memory_mode();
+
+
+    void   set_convert_file_name(string file_name);
+    string get_convert_file_name();
 
 
     void   set_config_file_name(string file_name);

@@ -108,7 +108,7 @@ int Translator::Translate (string PunchedCard_file_name, Memory & mem_obj)
         // op1, op2, op3
         for (int i = 0; i < 3; i++)
         {
-            string opi = "Operand1"; opi[2] += i;
+            string opi = "Operand0"; opi[7] += i;
 
             try{
                 token = Tools::getToken(cell);
