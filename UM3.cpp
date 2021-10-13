@@ -12,15 +12,17 @@
 using namespace std;
 
 static struct option long_options[] = {
-        {"config", 2, nullptr, 0},
-        {"custom_memory", 2, nullptr, 0},
-        {"start_machine_state", 2, nullptr, 0},
-        {"init_memory", 2, nullptr, 0},
+        {"config", 1, nullptr, 0},
+        {"custom-mem", 1, nullptr, 0},
+        {"start-state", 1, nullptr, 0},
+        {"init-mem", 1, nullptr, 0},
         {"punched", 1, nullptr, 0},
         {"help", 0, nullptr, 0},
         {"run", 0, nullptr, 0},
         {"txt-bin", 1, nullptr, 0},
         {"bin-txt", 1, nullptr, 0},
+        {"mem", 1, nullptr, 0},
+        {"log", 1, nullptr, 0},
         {nullptr, 0, nullptr, 0}
 };
 
@@ -33,7 +35,9 @@ enum index_of_options {
     HELP = 5,
     START = 6,
     CONV_TXT = 7,
-    CONV_BIN = 8
+    CONV_BIN = 8,
+    MEMORY = 9,
+    LOG = 10
 };
 
 void command_line_reading(int argc, char* argv[], Config * config)
@@ -62,6 +66,12 @@ void command_line_reading(int argc, char* argv[], Config * config)
             case 2:
                 switch(option_index)
                 {
+                    case index_of_options::LOG:
+                        config->set_log_file_name(optarg);
+                        break;
+                    case index_of_options::MEMORY:
+                        if (optarg) config->set_memory_file_name(optarg);
+                        break;
                     case index_of_options::CONV_TXT:
                         config->set_convert_file_name(optarg);
                         config->set_exec_mode(ExecMode::CONVERTOR_TXT_BIN);
@@ -99,7 +109,7 @@ void command_line_reading(int argc, char* argv[], Config * config)
                 }
                 break;
             default:
-                // ERROR
+                throw Exception("Unknown option");
                 break;
         }
     }
