@@ -88,7 +88,9 @@ int Translator::Translate (string PunchedCard_file_name, Memory & mem_obj)
         if (position != previous_index + 1)
         {
             fin.close();
-            throw InvalidAddressToken(cellNumber, token, "Current address = previous address + 1");
+            throw InvalidAddressToken(cellNumber, token,
+                                      "First address must be equal to 1\n"
+                                      "Current address = previous address + 1");
         }
 
         //   команда
