@@ -16,7 +16,7 @@ static struct option long_options[] = {
         {"custom-mem", 1, nullptr, 0},
         {"start-state", 1, nullptr, 0},
         {"init-mem", 1, nullptr, 0},
-        {"punched", 1, nullptr, 0},
+        {"punch", 1, nullptr, 0},
         {"help", 0, nullptr, 0},
         {"run", 0, nullptr, 0},
         {"txt-bin", 1, nullptr, 0},

@@ -13,7 +13,7 @@ Memory.o: Memory.cpp Memory.h Config.h Tools.h Exception.h
 	gcc Memory.cpp -c
 
 Parser.o: Parser.cpp Parser.h Exception.h Tools.h
-	gcc Paresr.cpp -c
+	gcc Parser.cpp -c
 
 Processor.o: Processor.cpp Processor.h Memory.h Config.h Tools.h Parser.h Exception.h Log.h Convertor.h BinaryStorage.h Translator.h
 	gcc Processor.cpp -c
@@ -35,3 +35,6 @@ Convertor.o: Convertor.cpp Convertor.h BinaryStorage.h Memory.h Config.h Excepti
 
 BinaryStorage.o: BinaryStorage.cpp BinaryStorage.h
 	gcc BinaryStorage.cpp -c
+
+clean:
+	rm -f *.o $(TARGET)
