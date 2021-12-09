@@ -24,7 +24,7 @@ void Convertor::txt_to_bin(string TxtFile, string OutFile)
     BinaryStorage buffer;
 
     if (OutFile.empty()) {
-        OutFile = TxtFile + ".txt";
+        OutFile = TxtFile + ".bin";
     }
 
     txt_to_storage(TxtFile, buffer);
@@ -44,7 +44,7 @@ void Convertor::bin_to_txt(string BinFile, string OutFile)
     BinaryStorage buffer;
 
     if (OutFile.empty()) {
-        OutFile = BinFile + ".bin";
+        OutFile = BinFile + ".txt";
     }
 
     bin_to_storage(BinFile, buffer);
