@@ -147,7 +147,6 @@ int main(int argc, char* argv[])
         }
     }
 
-
     catch (Exception & err)
     {
         cerr << "\n" << err.what() << "\n";
