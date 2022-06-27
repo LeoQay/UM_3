@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_LOG_H
+#define UM_3_LOG_H
 
 #include <string>
 
@@ -53,3 +54,5 @@ public:
                                   string RK
                                   );
 };
+
+#endif //UM_3_EXCEPTION_H

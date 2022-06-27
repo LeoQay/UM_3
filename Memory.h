@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_MEMORY_H
+#define UM_3_MEMORY_H
 
 #include "Config.h"
 
@@ -58,3 +59,5 @@ public:
  */
     void outNiceMemory(std::string memory_file_name);
 };
+
+#endif //UM_3_MEMORY_H

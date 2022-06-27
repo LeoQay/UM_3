@@ -266,4 +266,3 @@ string Config::get_convert_file_name()
 {
     return convert_file_name;
 }
-

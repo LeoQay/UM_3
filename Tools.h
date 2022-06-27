@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_TOOLS_H
+#define UM_3_TOOLS_H
 
 #include <string>
 #include <map>
@@ -129,3 +130,5 @@ public:
                                      char   space = ' '
     );
 };
+
+#endif //UM_3_TOOLS_H

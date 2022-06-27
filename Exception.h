@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_EXCEPTION_H
+#define UM_3_EXCEPTION_H
 
 #include <exception>
 #include <string>
@@ -240,3 +241,5 @@ public:
                            double result,
                            string message           = "Float Out Range");
 };
+
+#endif //UM_3_EXCEPTION_H

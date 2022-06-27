@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_TRANSLATOR_H
+#define UM_3_TRANSLATOR_H
 
 #include <string>
 
@@ -23,3 +24,4 @@ public:
 
 };
 
+#endif //UM_3_TRANSLATOR_H

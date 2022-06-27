@@ -1,7 +1,6 @@
 #ifndef UM_3_BINARYSTORAGE_H
 #define UM_3_BINARYSTORAGE_H
 
-
 class BinaryStorage
 {
 public:

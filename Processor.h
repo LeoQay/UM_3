@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_PROCESSOR_H
+#define UM_3_PROCESSOR_H
 
 #include <string>
 
@@ -389,3 +390,5 @@ public:
 
     void set_config_file_name(string file_name);
 };
+
+#endif //UM_3_PROCESSOR_H

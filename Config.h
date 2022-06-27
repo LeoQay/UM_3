@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UM_3_CONFIG_H
+#define UM_3_CONFIG_H
 
 #include <string>
 #include <map>
@@ -138,3 +139,5 @@ public:
 
     string help();
 };
+
+#endif //UM_3_CONFIG_H

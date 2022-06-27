@@ -1,5 +1,3 @@
-#pragma once
-
 #include "BinaryStorage.h"
 
 BinaryStorage::BinaryStorage(int size)
